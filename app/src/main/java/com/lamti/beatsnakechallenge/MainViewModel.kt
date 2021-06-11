@@ -8,10 +8,7 @@ import androidx.compose.ui.graphics.Color as ComposeColor
 class MainViewModel : ViewModel() {
 
     private val board: Board = Board(11, 9)
-    val boardSize: Int = board.size
-    val boardWidth: Int = board.width
-
-    var boardState: MutableState<List<List<Cell>>> = mutableStateOf(board.grid)
+    var boardState: MutableState<Board> = mutableStateOf(board)
 
     fun getCellColor(index: Int): ComposeColor =
         when (board.getCell(index).type) {
