@@ -3,7 +3,8 @@ package com.lamti.beatsnakechallenge
 
 data class Cell(
     val type: Type,
-    val index: Int
+    val x: Int,
+    val y: Int
 ) {
 
     enum class Type {

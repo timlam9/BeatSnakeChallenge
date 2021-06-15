@@ -1,51 +1,30 @@
 package com.lamti.beatsnakechallenge
 
-class Board(
-    private val rows: Int,
-    private val columns: Int
-) {
+import com.lamti.beatsnakechallenge.Cell.Type.DriverHead
+import com.lamti.beatsnakechallenge.Cell.Type.Empty
 
+data class Board(
     val grid: List<List<Cell>>
-    val size: Int = rows * columns
-    val width: Int = columns
+)
 
-    init {
-        val rowsList: MutableList<MutableList<Cell>> = mutableListOf()
-        val columnsList: MutableList<Cell> = mutableListOf()
+class Game(private val height: Int, private val width: Int) {
 
-        repeat(rows) { rowsIndex ->
-            repeat(columns) { columnsIndex ->
-                when {
-                    rowsIndex == 5 && columnsIndex == 4 -> columnsList.add(
-                        Cell(
-                            Cell.Type.DriverHead,
-                            getIndex(rowsIndex, columnsIndex)
-                        )
-                    )
-                    rowsIndex == 8 && columnsIndex == 7 -> columnsList.add(
-                        Cell(
-                            Cell.Type.Passenger,
-                            getIndex(rowsIndex, columnsIndex)
-                        )
-                    )
-                    else -> columnsList.add(
-                        Cell(
-                            Cell.Type.Empty,
-                            getIndex(rowsIndex, columnsIndex)
-                        )
-                    )
-                }
+    fun generateGrid(): List<List<Cell>> =
+        List(height) { y ->
+            List(width) { x ->
+                generateCell(x, y)
             }
-            rowsList.add(columnsList)
         }
 
-        grid = rowsList
-    }
+    private fun generateCell(x: Int, y: Int): Cell {
+        val centerX = width / 2
+        val centerY = height / 2
 
-    fun getIndex(rowsIndex: Int, columnsIndex: Int): Int {
-        return (0 until rows * columns).chunked(columns)[rowsIndex][columnsIndex]
+        return if (x == centerX && centerY == y) {
+            Cell(DriverHead, x, y)
+        } else {
+            Cell(Empty, x, y)
+        }
     }
-
-    fun getCell(index: Int): Cell = grid.flatten()[index]
 
 }
