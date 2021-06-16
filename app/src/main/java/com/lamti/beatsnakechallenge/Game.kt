@@ -38,23 +38,42 @@ class Game(private val height: Int, private val width: Int) {
             x = futureDriverX,
             y = futureDriverY
         )
+
+        val willBoardPassenger = futureDriverHead == _board.value.passenger
+
+        val previousBody = _board.value.driver.body
+        val body: List<Point> = previousBody.mapIndexed { index, point ->
+            if (index == 0) {
+                _board.value.driver.head
+            } else {
+                previousBody[index - 1]
+            }
+        }
+
+        val updatedBody = if(willBoardPassenger) {
+            if(previousBody.isEmpty()) listOf(driverHead) else body + previousBody.last()
+        } else {
+            body
+        }
+
         _board.value = _board.value.copy(
-            driver = _board.value.driver.copy(head = futureDriverHead),
+            driver = _board.value.driver.copy(
+                head = futureDriverHead,
+                body = updatedBody
+            ),
             passenger = updatePassenger(futureDriverHead)
         )
-
     }
 
     fun changeDirection() {
         _board.value = _board.value.copy(direction = _board.value.direction.nextItem())
     }
 
-    private fun generateGrid(): List<List<Point>> =
-        List(height) { y ->
-            List(width) { x ->
-                Point(x, y)
-            }
+    private fun generateGrid(): List<List<Point>> = List(height) { y ->
+        List(width) { x ->
+            Point(x, y)
         }
+    }
 
     private fun generatePassenger(driverHead: Point = Point(width / 2, height / 2)): Point =
         Point(
