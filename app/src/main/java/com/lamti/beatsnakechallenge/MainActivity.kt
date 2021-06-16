@@ -89,7 +89,12 @@ fun SnakeGrid(viewModel: MainViewModel) {
                 row.forEach { cell ->
                     Cell(
                         modifier = Modifier.weight(1f),
-                        color = viewModel.getCellColor(cell.x, cell.y)
+                        color = when (cell) {
+                            in board.driver.body -> Color.Magenta
+                            board.driver.head -> Color.Black
+                            board.passenger -> Color.Cyan
+                            else -> Color.White
+                        }
                     )
                 }
             }

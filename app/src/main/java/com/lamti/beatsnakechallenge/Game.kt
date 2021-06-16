@@ -1,90 +1,76 @@
 package com.lamti.beatsnakechallenge
 
-import com.lamti.beatsnakechallenge.Point.Type.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class Game(private val height: Int, private val width: Int) {
 
-    private val _board: MutableStateFlow<Board> = MutableStateFlow(Board(generateGrid()))
+    private val _board: MutableStateFlow<Board> = MutableStateFlow(
+        Board(
+            grid = generateGrid(),
+            driver = generateDriver(),
+            passenger = generatePassenger(),
+        )
+    )
+
     val board: StateFlow<Board> = _board
 
-    private fun generateGrid(): List<List<Point>> =
-        List(height) { y ->
-            List(width) { x ->
-                generateCell(x, y)
-            }
-        }
-
-    private fun generateCell(x: Int, y: Int): Point {
-        val centerX = width / 2
-        val centerY = height / 2
-
-        val firstPassengerX = (0 until width).random()
-        val firstPassengerY = (0 until height).random()
-
-        return if (x == centerX && centerY == y) {
-            Point(DriverHead, x, y)
-        } else if (x == firstPassengerX && y == firstPassengerY) {
-            Point(Passenger, x, y)
-        } else {
-            Point(Empty, x, y)
-        }
-    }
-
     fun update() {
-        var driverX = 0
-        var driverY = 0
-
-        board.value.grid.forEach { rows ->
-            rows.forEach { cell ->
-                if (cell.type == DriverHead) {
-                    driverX = cell.x
-                    driverY = cell.y
-                }
-            }
-        }
+        val driverHead: Point = board.value.driver.head
 
         val futureDriverX = when {
-            _board.value.direction == Board.Direction.Right && driverX + 1 >= width -> 0
-            _board.value.direction == Board.Direction.Left && driverX == 0 -> width - 1
-            _board.value.direction == Board.Direction.Left -> driverX - 1
-            _board.value.direction == Board.Direction.Right -> driverX + 1
-            else -> driverX
+            _board.value.direction == Board.Direction.Right && driverHead.x + 1 >= width -> 0
+            _board.value.direction == Board.Direction.Left && driverHead.x == 0 -> width - 1
+            _board.value.direction == Board.Direction.Left -> driverHead.x - 1
+            _board.value.direction == Board.Direction.Right -> driverHead.x + 1
+            else -> driverHead.x
         }
 
         val futureDriverY = when {
-            _board.value.direction == Board.Direction.Down && driverY + 1 >= height -> 0
-            _board.value.direction == Board.Direction.Up && driverY == 0 -> height - 1
-            _board.value.direction == Board.Direction.Up -> driverY - 1
-            _board.value.direction == Board.Direction.Down -> driverY + 1
-            else -> driverY
+            _board.value.direction == Board.Direction.Down && driverHead.y + 1 >= height -> 0
+            _board.value.direction == Board.Direction.Up && driverHead.y == 0 -> height - 1
+            _board.value.direction == Board.Direction.Up -> driverHead.y - 1
+            _board.value.direction == Board.Direction.Down -> driverHead.y + 1
+            else -> driverHead.y
         }
 
-        _board.value = _board.value.copy(
-            grid = updateGrid(
-                currentDriver = Point(Empty, driverX, driverY),
-                updatedDriver = Point(DriverHead, futureDriverX, futureDriverY)
-            )
+        val futureDriverHead = Point(
+            x = futureDriverX,
+            y = futureDriverY
         )
-    }
+        _board.value = _board.value.copy(
+            driver = _board.value.driver.copy(head = futureDriverHead),
+            passenger = updatePassenger(futureDriverHead)
+        )
 
-    private fun updateGrid(
-        currentDriver: Point,
-        updatedDriver: Point
-    ): List<List<Point>> =
-        _board.value.grid.mapIndexed { y, rows ->
-            rows.mapIndexed { x, cell ->
-                when {
-                    currentDriver.x == x && currentDriver.y == y -> Point(Empty, x, y)
-                    updatedDriver.x == x && updatedDriver.y == y -> Point(DriverHead, x, y)
-                    else -> cell
-                }
-            }
-        }
+    }
 
     fun changeDirection() {
         _board.value = _board.value.copy(direction = _board.value.direction.nextItem())
     }
+
+    private fun generateGrid(): List<List<Point>> =
+        List(height) { y ->
+            List(width) { x ->
+                Point(x, y)
+            }
+        }
+
+    private fun generatePassenger(driverHead: Point = Point(width / 2, height / 2)): Point =
+        Point(
+            x = (0 until width).filterNot { it == driverHead.x }.random(),
+            y = (0 until height).filterNot { it == driverHead.y }.random()
+        )
+
+    private fun generateDriver(): Driver = Driver(
+        head = Point(width / 2, height / 2),
+        body = emptyList()
+    )
+
+    private fun updatePassenger(futureDriverHead: Point) =
+        if (_board.value.passenger == futureDriverHead)
+            generatePassenger(futureDriverHead)
+        else
+            _board.value.passenger
 
 }

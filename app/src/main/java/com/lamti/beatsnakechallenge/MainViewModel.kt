@@ -14,15 +14,8 @@ class MainViewModel : ViewModel() {
     }
 
     private val game = Game(HEIGHT, WIDTH)
-    val board: StateFlow<Board> = game.board
 
-    fun getCellColor(x: Int, y: Int): ComposeColor =
-        when (game.board.value.grid[y][x].type) {
-            Point.Type.Empty -> ComposeColor.White
-            Point.Type.Passenger -> ComposeColor.Cyan
-            Point.Type.DriverHead -> ComposeColor.Black
-            Point.Type.DriverBody -> ComposeColor.Magenta
-        }
+    val board: StateFlow<Board> = game.board
 
     fun update() {
         game.update()

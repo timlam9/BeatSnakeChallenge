@@ -2,7 +2,12 @@ package com.lamti.beatsnakechallenge
 
 import com.lamti.beatsnakechallenge.Board.Direction.Right
 
-data class Board(val grid: List<List<Point>>, val direction: Direction = Right) {
+data class Board(
+    val grid: List<List<Point>>,
+    val direction: Direction = Right,
+    val driver: Driver,
+    val passenger: Point
+) {
 
     enum class Direction {
         Right,
