@@ -1,7 +1,7 @@
 package com.lamti.beatsnakechallenge
 
 
-data class Cell(
+data class Point(
     val type: Type,
     val x: Int,
     val y: Int
