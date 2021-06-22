@@ -1,6 +1,6 @@
 package com.lamti.beatsnakechallenge
 
-import org.junit.Assert.*
+import com.lamti.beatsnakechallenge.domain.Board
 import org.junit.Test
 
 class BoardTest {

@@ -1,4 +1,4 @@
-package com.lamti.beatsnakechallenge
+package com.lamti.beatsnakechallenge.domain
 
 import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow

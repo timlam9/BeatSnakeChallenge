@@ -1,4 +1,4 @@
-package com.lamti.beatsnakechallenge
+package com.lamti.beatsnakechallenge.domain
 
 
 data class Point(

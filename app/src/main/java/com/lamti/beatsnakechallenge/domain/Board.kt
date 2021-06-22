@@ -1,6 +1,6 @@
-package com.lamti.beatsnakechallenge
+package com.lamti.beatsnakechallenge.domain
 
-import com.lamti.beatsnakechallenge.Board.Direction.Right
+import com.lamti.beatsnakechallenge.domain.Board.Direction.Right
 
 data class Board(
     val grid: List<List<Point>>,

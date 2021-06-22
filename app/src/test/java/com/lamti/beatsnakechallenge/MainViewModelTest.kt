@@ -1,5 +1,6 @@
 package com.lamti.beatsnakechallenge
 
+import com.lamti.beatsnakechallenge.ui.activity.MainViewModel
 import org.junit.Test
 
 class MainViewModelTest {
