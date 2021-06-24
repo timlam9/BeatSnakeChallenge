@@ -17,7 +17,7 @@ import com.lamti.beatsnakechallenge.domain.Board
 import com.lamti.beatsnakechallenge.domain.Point
 
 @Composable
-fun SnakeGrid(board: Board, colorCell: (Point) -> Color) {
+fun SnakeBoard(board: Board, colorCell: (Point) -> Color) {
     Column(
         modifier = Modifier.padding(start = 20.dp, end = 20.dp)
     ) {

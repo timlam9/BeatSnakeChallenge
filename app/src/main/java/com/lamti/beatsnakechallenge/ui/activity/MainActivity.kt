@@ -18,7 +18,7 @@ import com.lamti.beatsnakechallenge.domain.Board
 import com.lamti.beatsnakechallenge.ui.activity.MainViewModel.Companion.SPEED
 import com.lamti.beatsnakechallenge.ui.components.Joystick
 import com.lamti.beatsnakechallenge.ui.components.Score
-import com.lamti.beatsnakechallenge.ui.components.SnakeGrid
+import com.lamti.beatsnakechallenge.ui.components.SnakeBoard
 import com.lamti.beatsnakechallenge.ui.theme.BeatSnakeChallengeTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -30,17 +30,18 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        updateGameLooper()
         setContent {
             BeatSnakeChallengeTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    MainContent(viewModel = viewModel)
+                    Snake(viewModel = viewModel)
                 }
             }
         }
+
+        updateGameLoop()
     }
 
-    private fun updateGameLooper() {
+    private fun updateGameLoop() {
         lifecycleScope.launchWhenResumed {
             while (isActive) {
                 delay(SPEED)
@@ -53,13 +54,13 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun MainContent(viewModel: MainViewModel) {
+    private fun Snake(viewModel: MainViewModel) {
         val board by viewModel.board.collectAsState()
         val score by viewModel.score.collectAsState()
 
         Column(modifier = Modifier.fillMaxSize()) {
             Score(score = score.toString())
-            SnakeGrid(board = board) { point ->
+            SnakeBoard(board = board) { point ->
                 viewModel.colorCell(point)
             }
             Joystick(
