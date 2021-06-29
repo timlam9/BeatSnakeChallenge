@@ -5,14 +5,18 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.lifecycleScope
 import com.lamti.beatsnakechallenge.domain.Board
 import com.lamti.beatsnakechallenge.ui.activity.MainViewModel.Companion.SPEED
@@ -20,6 +24,7 @@ import com.lamti.beatsnakechallenge.ui.components.Joystick
 import com.lamti.beatsnakechallenge.ui.components.Score
 import com.lamti.beatsnakechallenge.ui.components.SnakeBoard
 import com.lamti.beatsnakechallenge.ui.theme.BeatSnakeChallengeTheme
+import com.lamti.beatsnakechallenge.ui.theme.Navy100
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 
@@ -57,11 +62,15 @@ class MainActivity : ComponentActivity() {
     private fun Snake(viewModel: MainViewModel) {
         val board by viewModel.board.collectAsState()
         val score by viewModel.score.collectAsState()
+        val animatedColor = crashAnimatedColor()
 
         Column(modifier = Modifier.fillMaxSize()) {
             Score(score = score.toString())
             SnakeBoard(board = board) { point ->
-                viewModel.colorCell(point)
+                when {
+                    board.driver.hasCrashed() && board.driver.head == point -> animatedColor.value
+                    else -> viewModel.colorCell(point)
+                }
             }
             Joystick(
                 onUpClick = { viewModel.changeDirection(Board.Direction.Up) },
@@ -71,6 +80,22 @@ class MainActivity : ComponentActivity() {
                 onCenterClick = { viewModel.restartGame() }
             )
         }
+    }
+
+    @Composable
+    private fun crashAnimatedColor(): State<Color> {
+        val infiniteTransition = rememberInfiniteTransition()
+        return infiniteTransition.animateColor(
+            initialValue = Color.Red,
+            targetValue = Navy100,
+            animationSpec = infiniteRepeatable(
+                animation = tween(
+                    durationMillis = 150,
+                    easing = FastOutSlowInEasing
+                ),
+                repeatMode = RepeatMode.Reverse
+            )
+        )
     }
 
 }

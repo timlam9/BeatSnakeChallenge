@@ -41,7 +41,7 @@ fun Cell(modifier: Modifier, color: Color = MaterialTheme.colors.onBackground) {
     Box(
         modifier = modifier
             .clip(CircleShape)
-            .background(dayNightColor)
+            .background(color)
     ) {
         if (dayNightColor == MaterialTheme.colors.onBackground) {
             Icon(
