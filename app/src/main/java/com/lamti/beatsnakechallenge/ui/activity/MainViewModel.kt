@@ -1,10 +1,12 @@
 package com.lamti.beatsnakechallenge.ui.activity
 
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.lamti.beatsnakechallenge.domain.Board
 import com.lamti.beatsnakechallenge.domain.Game
 import com.lamti.beatsnakechallenge.domain.Point
+import com.lamti.beatsnakechallenge.domain.SnakeControllers
 import com.lamti.beatsnakechallenge.ui.theme.Mint100
 import com.lamti.beatsnakechallenge.ui.theme.MintBlend14
 import com.lamti.beatsnakechallenge.ui.theme.Navy100
@@ -25,6 +27,9 @@ class MainViewModel : ViewModel() {
     val running: StateFlow<Boolean> = game.running
     val board: StateFlow<Board> = game.board
     val score: StateFlow<Int> = game.score
+
+    var controllers: SnakeControllers by mutableStateOf(SnakeControllers.PieController)
+        private set
 
     fun colorCell(point: Point): Color = when (point) {
         in board.value.driver.body -> MintBlend14
@@ -47,4 +52,12 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun onSettingsClicked() {
+        controllers = when(controllers) {
+            SnakeControllers.PieController -> SnakeControllers.Joystick
+            SnakeControllers.Joystick -> SnakeControllers.PieController
+        }
+    }
+
 }
+

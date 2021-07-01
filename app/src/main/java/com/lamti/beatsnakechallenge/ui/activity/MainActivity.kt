@@ -19,8 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.lifecycleScope
 import com.lamti.beatsnakechallenge.domain.Board
+import com.lamti.beatsnakechallenge.domain.SnakeControllers
 import com.lamti.beatsnakechallenge.ui.activity.MainViewModel.Companion.SPEED
 import com.lamti.beatsnakechallenge.ui.components.Joystick
+import com.lamti.beatsnakechallenge.ui.components.PieController
 import com.lamti.beatsnakechallenge.ui.components.Score
 import com.lamti.beatsnakechallenge.ui.components.SnakeBoard
 import com.lamti.beatsnakechallenge.ui.theme.BeatSnakeChallengeTheme
@@ -29,6 +31,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 
 class MainActivity : ComponentActivity() {
+
+    companion object {
+
+        const val CRASH_ANIMATION_DURATION = 300
+
+    }
 
     private val viewModel: MainViewModel by viewModels()
 
@@ -62,23 +70,39 @@ class MainActivity : ComponentActivity() {
     private fun Snake(viewModel: MainViewModel) {
         val board by viewModel.board.collectAsState()
         val score by viewModel.score.collectAsState()
+        val controllers = viewModel.controllers
+
         val animatedColor = crashAnimatedColor()
 
         Column(modifier = Modifier.fillMaxSize()) {
-            Score(score = score.toString())
+            Score(score = score.toString()) {
+                viewModel.onSettingsClicked()
+            }
             SnakeBoard(board = board) { point ->
                 when {
                     board.driver.hasCrashed() && board.driver.head == point -> animatedColor.value
                     else -> viewModel.colorCell(point)
                 }
             }
-            Joystick(
-                onUpClick = { viewModel.changeDirection(Board.Direction.Up) },
-                onLeftClick = { viewModel.changeDirection(Board.Direction.Left) },
-                onRightClick = { viewModel.changeDirection(Board.Direction.Right) },
-                onDownClick = { viewModel.changeDirection(Board.Direction.Down) },
-                onCenterClick = { viewModel.restartGame() }
-            )
+            when (controllers) {
+                SnakeControllers.PieController -> {
+                    PieController(
+                        onUpClick = { viewModel.changeDirection(Board.Direction.Up) },
+                        onLeftClick = { viewModel.changeDirection(Board.Direction.Left) },
+                        onRightClick = { viewModel.changeDirection(Board.Direction.Right) },
+                        onDownClick = { viewModel.changeDirection(Board.Direction.Down) }
+                    )
+                }
+                SnakeControllers.Joystick -> {
+                    Joystick(
+                        onUpClick = { viewModel.changeDirection(Board.Direction.Up) },
+                        onLeftClick = { viewModel.changeDirection(Board.Direction.Left) },
+                        onRightClick = { viewModel.changeDirection(Board.Direction.Right) },
+                        onDownClick = { viewModel.changeDirection(Board.Direction.Down) },
+                        onCenterClick = { viewModel.restartGame() }
+                    )
+                }
+            }
         }
     }
 
@@ -90,7 +114,7 @@ class MainActivity : ComponentActivity() {
             targetValue = Navy100,
             animationSpec = infiniteRepeatable(
                 animation = tween(
-                    durationMillis = 150,
+                    durationMillis = CRASH_ANIMATION_DURATION,
                     easing = FastOutSlowInEasing
                 ),
                 repeatMode = RepeatMode.Reverse
