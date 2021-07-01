@@ -44,6 +44,12 @@ class Game(private val height: Int, private val width: Int) {
 
 
     fun changeDirection(direction: Board.Direction) {
+        when (direction) {
+            Board.Direction.Right -> if (_board.value.direction == Board.Direction.Left) return
+            Board.Direction.Down -> if (_board.value.direction == Board.Direction.Up) return
+            Board.Direction.Left -> if (_board.value.direction == Board.Direction.Right) return
+            Board.Direction.Up -> if (_board.value.direction == Board.Direction.Down) return
+        }
         _board.value = _board.value.copy(direction = direction)
     }
 
