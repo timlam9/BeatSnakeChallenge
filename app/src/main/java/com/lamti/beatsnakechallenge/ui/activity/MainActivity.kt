@@ -9,8 +9,7 @@ import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -102,6 +101,28 @@ class MainActivity : ComponentActivity() {
                         onCenterClick = { viewModel.restartGame() }
                     )
                 }
+            }
+            if (!viewModel.running.value) {
+                AlertDialog(
+                    onDismissRequest = { viewModel.restartGame() },
+                    title = {
+                        Text(text = "Game Over")
+                    },
+                    text = {
+                        Text("Score: $score")
+                    },
+                    confirmButton = {
+                        Button(onClick = { viewModel.restartGame() }) {
+                            Text("Ok")
+                        }
+                    },
+                    dismissButton = {
+                        Button(
+                            onClick = { viewModel.restartGame() }) {
+                            Text("Cancel")
+                        }
+                    }
+                )
             }
         }
     }
