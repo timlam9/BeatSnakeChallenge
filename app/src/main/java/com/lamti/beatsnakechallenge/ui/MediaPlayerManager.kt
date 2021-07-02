@@ -11,7 +11,7 @@ class MediaPlayerManager(private val context: Context) {
 
         private const val BACKGROUND_MUSIC = "bg_music"
         private const val BOARD_PASSENGER = "board_passenger"
-        private const val GAME_OVER = "crash"
+        private const val GAME_OVER = "crash_short"
         private const val RAW_FILE = "raw"
 
     }
