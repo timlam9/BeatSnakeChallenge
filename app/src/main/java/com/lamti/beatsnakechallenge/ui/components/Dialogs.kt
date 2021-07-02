@@ -120,7 +120,7 @@ private fun SettingsDialogContent(viewModel: MainViewModel) {
                     .background(color = controllersBgColor(viewModel.controllers, Joystick))
             ) {
                 Icon(
-                    Icons.Filled.Phone,
+                    Icons.Filled.AddCircle,
                     contentDescription = "Joystick",
                     tint = Color.Red
                 )

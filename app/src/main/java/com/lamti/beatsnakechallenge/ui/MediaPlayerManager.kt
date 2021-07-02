@@ -35,7 +35,10 @@ class MediaPlayerManager(private val context: Context) {
 
     fun playBoardPassengerSound(score: Int) {
         if (score == 0) return
-        setupPlayer(BOARD_PASSENGER).start()
+        with(setupPlayer(BOARD_PASSENGER)) {
+            setVolume(0.1f, 0.1f)
+            start()
+        }
     }
 
     fun playGameOverSound() {
