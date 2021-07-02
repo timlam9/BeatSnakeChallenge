@@ -1,6 +1,8 @@
 package com.lamti.beatsnakechallenge.ui.activity
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.lamti.beatsnakechallenge.domain.Board

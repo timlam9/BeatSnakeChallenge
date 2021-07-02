@@ -8,10 +8,14 @@ import androidx.activity.viewModels
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.lifecycle.lifecycleScope
+import com.lamti.beatsnakechallenge.domain.Board
+import com.lamti.beatsnakechallenge.ui.MediaPlayerManager
 import com.lamti.beatsnakechallenge.ui.activity.MainViewModel.Companion.SPEED
 import com.lamti.beatsnakechallenge.ui.components.Snake
 import com.lamti.beatsnakechallenge.ui.theme.BeatSnakeChallengeTheme
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 
 class MainActivity : ComponentActivity() {
@@ -23,6 +27,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private val viewModel: MainViewModel by viewModels()
+    private val mediaPlayerManager = MediaPlayerManager(this@MainActivity)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +38,19 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
         updateGameLoop()
+        handleSounds()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mediaPlayerManager.resumeBackgroundMusic()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mediaPlayerManager.pauseBackgroundMusic()
     }
 
     private fun updateGameLoop() {
@@ -46,6 +63,16 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private fun handleSounds() {
+        mediaPlayerManager.initMediaPlayers()
+        viewModel.score.onEach(mediaPlayerManager::playBoardPassengerSound).launchIn(lifecycleScope)
+        viewModel.board.onEach(::playGameOverSound).launchIn(lifecycleScope)
+    }
+
+    private fun playGameOverSound(board: Board) {
+        if (board.driver.hasCrashed()) mediaPlayerManager.playGameOverSound()
     }
 
 }
