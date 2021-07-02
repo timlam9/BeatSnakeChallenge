@@ -10,7 +10,6 @@ import androidx.compose.material.Surface
 import androidx.lifecycle.lifecycleScope
 import com.lamti.beatsnakechallenge.domain.Board
 import com.lamti.beatsnakechallenge.ui.MediaPlayerManager
-import com.lamti.beatsnakechallenge.ui.activity.MainViewModel.Companion.SPEED
 import com.lamti.beatsnakechallenge.ui.components.Snake
 import com.lamti.beatsnakechallenge.ui.theme.BeatSnakeChallengeTheme
 import kotlinx.coroutines.delay
@@ -56,7 +55,7 @@ class MainActivity : ComponentActivity() {
     private fun updateGameLoop() {
         lifecycleScope.launchWhenResumed {
             while (isActive) {
-                delay(SPEED)
+                delay(viewModel.snakeSpeed.value)
                 if (viewModel.running.value) {
                     Log.d("GAME_STATE", "Running: ${viewModel.running.value}")
                     viewModel.updateGame()

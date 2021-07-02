@@ -41,8 +41,11 @@ fun Snake(viewModel: MainViewModel) {
             }
         }
         Controllers(viewModel.controllers, viewModel)
-        if (!viewModel.running.value) {
+        if (viewModel.board.value.driver.hasCrashed()) {
             GameOverDialog(viewModel, score)
+        }
+        if (viewModel.showSettings) {
+            SettingsDialog(viewModel = viewModel)
         }
     }
 }

@@ -5,10 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
-import com.lamti.beatsnakechallenge.domain.Board
-import com.lamti.beatsnakechallenge.domain.Game
-import com.lamti.beatsnakechallenge.domain.Point
-import com.lamti.beatsnakechallenge.domain.SnakeControllers
+import com.lamti.beatsnakechallenge.domain.*
 import com.lamti.beatsnakechallenge.ui.theme.Mint100
 import com.lamti.beatsnakechallenge.ui.theme.MintBlend14
 import com.lamti.beatsnakechallenge.ui.theme.Navy100
@@ -20,7 +17,6 @@ class MainViewModel : ViewModel() {
 
         private const val HEIGHT = 11
         private const val WIDTH = 9
-        const val SPEED: Long = 300
 
     }
 
@@ -31,6 +27,12 @@ class MainViewModel : ViewModel() {
     val score: StateFlow<Int> = game.score
 
     var controllers: SnakeControllers by mutableStateOf(SnakeControllers.PieController)
+        private set
+
+    var showSettings: Boolean by mutableStateOf(false)
+        private set
+
+    var snakeSpeed: SnakeSpeed by mutableStateOf(SnakeSpeed.Normal)
         private set
 
     fun colorCell(point: Point): Color = when (point) {
@@ -55,10 +57,15 @@ class MainViewModel : ViewModel() {
     }
 
     fun onSettingsClicked() {
-        controllers = when(controllers) {
-            SnakeControllers.PieController -> SnakeControllers.Joystick
-            SnakeControllers.Joystick -> SnakeControllers.PieController
-        }
+        showSettings = !showSettings
+    }
+
+    fun setController(controller: SnakeControllers) {
+        controllers = controller
+    }
+
+    fun changeSnakeSpeed(speed: SnakeSpeed) {
+        snakeSpeed = speed
     }
 
 }
