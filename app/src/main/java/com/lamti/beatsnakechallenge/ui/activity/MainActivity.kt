@@ -5,12 +5,14 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.lifecycle.lifecycleScope
 import com.lamti.beatsnakechallenge.domain.Board
 import com.lamti.beatsnakechallenge.ui.MediaPlayerManager
-import com.lamti.beatsnakechallenge.ui.components.Snake
+import com.lamti.beatsnakechallenge.ui.SnakePreferences
+import com.lamti.beatsnakechallenge.ui.navigation.SnakeNavigation
 import com.lamti.beatsnakechallenge.ui.theme.BeatSnakeChallengeTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
@@ -19,25 +21,25 @@ import kotlinx.coroutines.isActive
 
 class MainActivity : ComponentActivity() {
 
-    companion object {
-
-        const val CRASH_ANIMATION_DURATION = 300
-
-    }
-
     private val viewModel: MainViewModel by viewModels()
     private val mediaPlayerManager = MediaPlayerManager(this@MainActivity)
+    private val preferences = SnakePreferences()
 
+    @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             BeatSnakeChallengeTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    Snake(viewModel = viewModel)
+                    SnakeNavigation(
+                        viewModel = viewModel,
+                        preferences = preferences
+                    )
                 }
             }
         }
 
+        preferences.initSharedPrefs(this@MainActivity)
         updateGameLoop()
         handleSounds()
     }

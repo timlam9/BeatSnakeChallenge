@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Beat Snake</string>
+    <string name="hello_there">Hello there!</string>
+    <string name="welcome_to_snake">Welcome to Beat Snake!</string>
+    <string name="whats_your_name">What\'s your name?</string>
+    <string name="type_your_name">Type your name</string>
+    <string name="play">Play</string>
 </resources>

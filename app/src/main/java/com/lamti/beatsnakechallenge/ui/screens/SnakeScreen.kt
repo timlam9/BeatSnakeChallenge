@@ -1,4 +1,4 @@
-package com.lamti.beatsnakechallenge.ui.components
+package com.lamti.beatsnakechallenge.ui.screens
 
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.*
@@ -20,12 +20,16 @@ import androidx.compose.ui.unit.dp
 import com.lamti.beatsnakechallenge.R
 import com.lamti.beatsnakechallenge.domain.Board
 import com.lamti.beatsnakechallenge.domain.Point
-import com.lamti.beatsnakechallenge.ui.activity.MainActivity
 import com.lamti.beatsnakechallenge.ui.activity.MainViewModel
+import com.lamti.beatsnakechallenge.ui.components.Controllers
+import com.lamti.beatsnakechallenge.ui.components.GameOverDialog
+import com.lamti.beatsnakechallenge.ui.components.Score
+import com.lamti.beatsnakechallenge.ui.components.SettingsDialog
+import com.lamti.beatsnakechallenge.ui.theme.CRASH_ANIMATION_DURATION
 import com.lamti.beatsnakechallenge.ui.theme.Navy100
 
 @Composable
-fun Snake(viewModel: MainViewModel) {
+fun SnakeScreen(viewModel: MainViewModel) {
     val board by viewModel.board.collectAsState()
     val score by viewModel.score.collectAsState()
     val animatedColor = crashAnimatedColor()
@@ -58,7 +62,7 @@ private fun crashAnimatedColor(): State<Color> {
         targetValue = Navy100,
         animationSpec = infiniteRepeatable(
             animation = tween(
-                durationMillis = MainActivity.CRASH_ANIMATION_DURATION,
+                durationMillis = CRASH_ANIMATION_DURATION,
                 easing = FastOutSlowInEasing
             ),
             repeatMode = RepeatMode.Reverse

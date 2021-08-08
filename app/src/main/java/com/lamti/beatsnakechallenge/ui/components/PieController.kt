@@ -24,13 +24,9 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.lamti.beatsnakechallenge.ui.components.PieShape.PieControllerType.*
-import com.lamti.beatsnakechallenge.ui.theme.Mint100
-import com.lamti.beatsnakechallenge.ui.theme.Navy80
-import com.lamti.beatsnakechallenge.ui.theme.Orange100
-
-private val controllerColorOne = Orange100
-private val controllerColorTwo = Mint100
-private val separatorColor = Navy80
+import com.lamti.beatsnakechallenge.ui.theme.controllerColorOne
+import com.lamti.beatsnakechallenge.ui.theme.controllerColorTwo
+import com.lamti.beatsnakechallenge.ui.theme.separatorColor
 
 @Composable
 fun PieController(

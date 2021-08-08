@@ -5,7 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
-import com.lamti.beatsnakechallenge.domain.*
+import com.lamti.beatsnakechallenge.domain.Board
+import com.lamti.beatsnakechallenge.domain.Game
+import com.lamti.beatsnakechallenge.domain.Point
+import com.lamti.beatsnakechallenge.domain.SnakeControllers
+import com.lamti.beatsnakechallenge.domain.SnakeSpeed
 import com.lamti.beatsnakechallenge.ui.theme.Mint100
 import com.lamti.beatsnakechallenge.ui.theme.MintBlend14
 import com.lamti.beatsnakechallenge.ui.theme.Navy100
