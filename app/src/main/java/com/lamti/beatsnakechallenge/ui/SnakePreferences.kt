@@ -1,33 +1,41 @@
 package com.lamti.beatsnakechallenge.ui
 
-import android.content.Context
 import android.content.SharedPreferences
 
-class SnakePreferences {
+class SnakePreferences(private val sharedPreferences: SharedPreferences) {
 
     companion object {
 
         const val SNAKE_PREFERENCES = "snake_preferences"
-        const val NAME_KEY = "name"
+        const val KEY_NAME = "name"
+        const val KEY_ID = "id"
+        const val KEY_HIGHSCORE = "highscore"
 
-    }
-
-    private var sharedPreferences: SharedPreferences? = null
-
-    fun initSharedPrefs(context: Context) {
-        sharedPreferences = context.getSharedPreferences(SNAKE_PREFERENCES, Context.MODE_PRIVATE)
     }
 
     fun saveUsername(name: String) {
-        if (sharedPreferences == null) return
-        val editor: SharedPreferences.Editor = sharedPreferences!!.edit()
-        editor.putString(NAME_KEY, name)
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+        editor.putString(KEY_NAME, name)
         editor.apply()
     }
 
-    fun getUsername(): String = when (sharedPreferences) {
-        null -> ""
-        else -> sharedPreferences!!.getString(NAME_KEY, "") ?: ""
+    fun saveUserID(id: String) {
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+        editor.putString(KEY_ID, id)
+        editor.apply()
     }
+
+    fun saveHighscore(score: Int) {
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+        editor.putInt(KEY_HIGHSCORE, score)
+        editor.apply()
+    }
+
+    fun getUsername(): String = sharedPreferences.getString(KEY_NAME, "") ?: ""
+
+    fun getID(): String = sharedPreferences.getString(KEY_ID, "") ?: ""
+
+
+    fun getHighscore(): Int = sharedPreferences.getInt(KEY_HIGHSCORE, 0)
 
 }

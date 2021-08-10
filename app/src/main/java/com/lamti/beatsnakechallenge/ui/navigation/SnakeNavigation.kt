@@ -1,106 +1,88 @@
 package com.lamti.beatsnakechallenge.ui.navigation
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import com.lamti.beatsnakechallenge.ui.SnakePreferences
-import com.lamti.beatsnakechallenge.ui.activity.MainViewModel
+import androidx.compose.ui.graphics.Color
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.lamti.beatsnakechallenge.data.User
+import com.lamti.beatsnakechallenge.domain.Board
+import com.lamti.beatsnakechallenge.domain.Point
+import com.lamti.beatsnakechallenge.domain.SnakeControllers
+import com.lamti.beatsnakechallenge.domain.SnakeSpeed
 import com.lamti.beatsnakechallenge.ui.screens.HelloScreen
+import com.lamti.beatsnakechallenge.ui.screens.HighscoresScreen
 import com.lamti.beatsnakechallenge.ui.screens.SnakeScreen
-import com.lamti.beatsnakechallenge.ui.theme.ANIMATION_DURATION
-import com.lamti.beatsnakechallenge.ui.theme.ANIMATION_OFFSET
+import com.lamti.beatsnakechallenge.ui.screens.SnakeState
 
 @ExperimentalAnimationApi
 @Composable
-fun SnakeNavigation(viewModel: MainViewModel, preferences: SnakePreferences) {
-    val navController = rememberAnimatedNavController()
-    val initialRoute = remember { if (preferences.getUsername().isNullOrEmpty()) Screen.Hello.route else Screen.Snake.route }
+fun SnakeNavigation(
+    user: User,
+    users: List<User>,
+    uploadUser: (User) -> Unit,
+    onSettingsClicked: () -> Unit,
+    onHighscoresClicked: () -> Unit,
+    currentSnakeSpeed: SnakeSpeed,
+    currentController: SnakeControllers,
+    onSpeedChanged: (SnakeSpeed) -> Unit,
+    onControllerChanged: (SnakeControllers) -> Unit,
+    board: Board,
+    score: Int,
+    showSettings: Boolean,
+    onChangeDirection: (Board.Direction) -> Unit,
+    restartGame: () -> Unit,
+    gameOver: (Int) -> Unit,
+    colorCell: (Point) -> Color
+) {
+    val navController = rememberNavController()
+    val initialRoute = if (user.name.isEmpty()) Screen.Hello.route else Screen.Snake.route
 
-    AnimatedNavHost(
+    NavHost(
         navController = navController,
         startDestination = initialRoute,
     ) {
         composable(
-            route = Screen.Hello.route,
-            enterTransition = { initial, _ ->
-                when (initial.destination.route) {
-                    Screen.Snake.route ->
-                        slideInHorizontally(
-                            initialOffsetX = { ANIMATION_OFFSET },
-                            animationSpec = tween(ANIMATION_DURATION)
-                        ) + fadeIn(animationSpec = tween(ANIMATION_DURATION))
-                    else -> null
-                }
-            },
-            exitTransition = { _, target ->
-                when (target.destination.route) {
-                    Screen.Snake.route ->
-                        slideOutHorizontally(
-                            targetOffsetX = { -ANIMATION_OFFSET },
-                            animationSpec = tween(ANIMATION_DURATION)
-                        ) + fadeOut(animationSpec = tween(ANIMATION_DURATION))
-                    else -> null
-                }
-            },
-            popEnterTransition = { initial, _ ->
-                when (initial.destination.route) {
-                    Screen.Snake.route ->
-                        slideInHorizontally(
-                            initialOffsetX = { -ANIMATION_OFFSET },
-                            animationSpec = tween(ANIMATION_DURATION)
-                        ) + fadeIn(animationSpec = tween(ANIMATION_DURATION))
-                    else -> null
-                }
-            }
+            route = Screen.Hello.route
         ) {
             HelloScreen { name ->
-                preferences.saveUsername(name)
+                uploadUser(User(name = name))
                 navController.navigate(Screen.Snake.route)
             }
         }
         composable(
-            route = Screen.Snake.route,
-            enterTransition = { initial, _ ->
-                when (initial.destination.route) {
-                    Screen.Hello.route ->
-                        slideInHorizontally(
-                            initialOffsetX = { ANIMATION_OFFSET },
-                            animationSpec = tween(ANIMATION_DURATION)
-                        ) + fadeIn(animationSpec = tween(ANIMATION_DURATION))
-                    else -> null
-                }
-            },
-            exitTransition = { _, target ->
-                when (target.destination.route) {
-                    Screen.Hello.route ->
-                        slideOutHorizontally(
-                            targetOffsetX = { -ANIMATION_OFFSET },
-                            animationSpec = tween(ANIMATION_DURATION)
-                        ) + fadeOut(animationSpec = tween(ANIMATION_DURATION))
-                    else -> null
-                }
-            },
-            popExitTransition = { _, target ->
-                when (target.destination.route) {
-                    Screen.Hello.route ->
-                        slideOutHorizontally(
-                            targetOffsetX = { ANIMATION_OFFSET },
-                            animationSpec = tween(ANIMATION_DURATION)
-                        ) + fadeOut(animationSpec = tween(ANIMATION_DURATION))
-                    else -> null
-                }
-            }
+            route = Screen.Snake.route
         ) {
             SnakeScreen(
-                viewModel = viewModel
+                snakeState = SnakeState(
+                    score = score,
+                    board = board,
+                    controllers = currentController,
+                    showSettings = showSettings,
+                    snakeSpeed = currentSnakeSpeed
+                ),
+                onSettingsClicked = { onSettingsClicked() },
+                onHighscoresClicked = {
+                    onHighscoresClicked()
+                    navController.navigate(Screen.Highscores.route)
+                },
+                highscore = user.highscore,
+                onSpeedChanged = { onSpeedChanged(it) },
+                onControllerChanged = { onControllerChanged(it) },
+                onChangeDirection = { onChangeDirection(it) },
+                restartGame = restartGame,
+                gameOver = { gameOver(it) },
+                colorCell = { colorCell(it) }
+            )
+        }
+        composable(
+            route = Screen.Highscores.route
+        ) {
+            HighscoresScreen(
+                users = users,
+                id = user.id ?: ""
             )
         }
     }

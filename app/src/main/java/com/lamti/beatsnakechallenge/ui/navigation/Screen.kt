@@ -6,4 +6,6 @@ sealed class Screen(open val route: String = "") {
 
     object Snake : Screen("snake")
 
+    object Highscores : Screen("highscores")
+
 }

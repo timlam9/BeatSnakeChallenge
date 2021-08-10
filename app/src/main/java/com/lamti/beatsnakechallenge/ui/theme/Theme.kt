@@ -6,30 +6,26 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import okhttp3.internal.wait
 
 private val DarkColorPalette = darkColors(
     primary = Purple200,
     primaryVariant = Purple700,
     secondary = Teal200,
-    background = Navy80,
-    onBackground = Color.White
+    onBackground = Navy80,
+    surface = Navy80,
+    background = Color.White,
+    onSurface = Color.White
 )
 
 private val LightColorPalette = lightColors(
     primary = Purple500,
     primaryVariant = Purple700,
     secondary = Teal200,
-    background = Color.White,
-    onBackground = Navy10
-
-    /* Other default colors to override
-    background = Color.White,
+    background = Navy100,
+    onBackground = Color.White,
     surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
+    onSurface = Navy100
 )
 
 @Composable

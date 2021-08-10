@@ -2,13 +2,16 @@ package com.lamti.beatsnakechallenge.ui.screens
 
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -18,8 +21,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.lamti.beatsnakechallenge.R
+import com.lamti.beatsnakechallenge.data.SnakeRepository
 import com.lamti.beatsnakechallenge.domain.Board
 import com.lamti.beatsnakechallenge.domain.Point
+import com.lamti.beatsnakechallenge.domain.SnakeControllers
+import com.lamti.beatsnakechallenge.domain.SnakeSpeed
 import com.lamti.beatsnakechallenge.ui.activity.MainViewModel
 import com.lamti.beatsnakechallenge.ui.components.Controllers
 import com.lamti.beatsnakechallenge.ui.components.GameOverDialog
@@ -28,28 +34,58 @@ import com.lamti.beatsnakechallenge.ui.components.SettingsDialog
 import com.lamti.beatsnakechallenge.ui.theme.CRASH_ANIMATION_DURATION
 import com.lamti.beatsnakechallenge.ui.theme.Navy100
 
+data class SnakeState(
+    val score: Int,
+    val board: Board,
+    val controllers: SnakeControllers,
+    val showSettings: Boolean,
+    val snakeSpeed: SnakeSpeed
+)
+
 @Composable
-fun SnakeScreen(viewModel: MainViewModel) {
-    val board by viewModel.board.collectAsState()
-    val score by viewModel.score.collectAsState()
+fun SnakeScreen(
+    snakeState: SnakeState,
+    onSettingsClicked: () -> Unit,
+    onHighscoresClicked: () -> Unit,
+    highscore: Int,
+    onSpeedChanged: (SnakeSpeed) -> Unit,
+    onControllerChanged: (SnakeControllers) -> Unit,
+    colorCell: (Point) -> Color,
+    gameOver: (Int) -> Unit,
+    onChangeDirection: (Board.Direction) -> Unit,
+    restartGame: () -> Unit
+) {
+
+
     val animatedColor = crashAnimatedColor()
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Score(score = score.toString()) {
-            viewModel.onSettingsClicked()
-        }
-        SnakeBoard(board = board) { point ->
+        Score(score = snakeState.score.toString()) { onSettingsClicked() }
+        SnakeBoard(board = snakeState.board) { point ->
             when {
-                board.driver.hasCrashed() && board.driver.head == point -> animatedColor.value
-                else -> viewModel.colorCell(point)
+                snakeState.board.driver.hasCrashed() && snakeState.board.driver.head == point -> animatedColor.value
+                else -> colorCell(point)
             }
         }
-        Controllers(viewModel.controllers, viewModel)
-        if (viewModel.board.value.driver.hasCrashed()) {
-            GameOverDialog(viewModel, score)
+        Controllers(
+            controllers = snakeState.controllers,
+            onChangeDirection = onChangeDirection,
+            restartGame = restartGame
+        )
+        if (snakeState.board.driver.hasCrashed()) {
+            LaunchedEffect(true) { gameOver(snakeState.score) }
+            GameOverDialog(snakeState.score, restartGame)
         }
-        if (viewModel.showSettings) {
-            SettingsDialog(viewModel = viewModel)
+        if (snakeState.showSettings) {
+            SettingsDialog(
+                onSettingsClicked = onSettingsClicked,
+                onHighscoresClicked = onHighscoresClicked,
+                currentSnakeSpeed = snakeState.snakeSpeed,
+                currentController = snakeState.controllers,
+                highscore = highscore,
+                onSpeedChanged = onSpeedChanged,
+                onControllerChanged = onControllerChanged
+            )
         }
     }
 }
@@ -73,7 +109,16 @@ private fun crashAnimatedColor(): State<Color> {
 @Composable
 fun SnakeBoard(board: Board, colorCell: (Point) -> Color) {
     Column(
-        modifier = Modifier.padding(start = 20.dp, end = 20.dp)
+        modifier = Modifier
+            .padding(10.dp)
+            .border(
+                border = BorderStroke(
+                    width = 2.dp,
+                    color = MaterialTheme.colors.background
+                ),
+                shape = RoundedCornerShape(2)
+            )
+            .padding(4.dp)
     ) {
         board.grid.forEach { row ->
             Row(modifier = Modifier.fillMaxWidth()) {
@@ -89,25 +134,16 @@ fun SnakeBoard(board: Board, colorCell: (Point) -> Color) {
 }
 
 @Composable
-fun Cell(modifier: Modifier, color: Color = MaterialTheme.colors.onBackground) {
-    val dayNightColor = if (color == Color.White) MaterialTheme.colors.onBackground else color
-
+fun Cell(modifier: Modifier, color: Color = MaterialTheme.colors.background) {
     Box(
         modifier = modifier
             .clip(CircleShape)
             .background(color)
     ) {
-        if (dayNightColor == MaterialTheme.colors.onBackground) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_beat),
-                tint = dayNightColor,
-                contentDescription = null
-            )
-        } else {
-            Image(
-                painter = painterResource(id = R.drawable.ic_beat),
-                contentDescription = null
-            )
-        }
+        Icon(
+            painter = painterResource(id = R.drawable.ic_beat),
+            tint = Color.White,
+            contentDescription = null
+        )
     }
 }

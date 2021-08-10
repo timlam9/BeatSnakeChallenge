@@ -3,29 +3,29 @@ package com.lamti.beatsnakechallenge.ui.components
 import androidx.compose.runtime.Composable
 import com.lamti.beatsnakechallenge.domain.Board
 import com.lamti.beatsnakechallenge.domain.SnakeControllers
-import com.lamti.beatsnakechallenge.ui.activity.MainViewModel
 
 @Composable
 fun Controllers(
     controllers: SnakeControllers,
-    viewModel: MainViewModel
+    onChangeDirection: (Board.Direction) -> Unit,
+    restartGame: () -> Unit
 ) {
     when (controllers) {
         SnakeControllers.PieController -> {
             PieController(
-                onUpClick = { viewModel.changeDirection(Board.Direction.Up) },
-                onLeftClick = { viewModel.changeDirection(Board.Direction.Left) },
-                onRightClick = { viewModel.changeDirection(Board.Direction.Right) },
-                onDownClick = { viewModel.changeDirection(Board.Direction.Down) }
+                onUpClick = { onChangeDirection(Board.Direction.Up) },
+                onLeftClick = { onChangeDirection(Board.Direction.Left) },
+                onRightClick = { onChangeDirection(Board.Direction.Right) },
+                onDownClick = { onChangeDirection(Board.Direction.Down) }
             )
         }
         SnakeControllers.Joystick -> {
             Joystick(
-                onUpClick = { viewModel.changeDirection(Board.Direction.Up) },
-                onLeftClick = { viewModel.changeDirection(Board.Direction.Left) },
-                onRightClick = { viewModel.changeDirection(Board.Direction.Right) },
-                onDownClick = { viewModel.changeDirection(Board.Direction.Down) },
-                onCenterClick = { viewModel.restartGame() }
+                onUpClick = { onChangeDirection(Board.Direction.Up) },
+                onLeftClick = { onChangeDirection(Board.Direction.Left) },
+                onRightClick = { onChangeDirection(Board.Direction.Right) },
+                onDownClick = { onChangeDirection(Board.Direction.Down) },
+                onCenterClick = { restartGame() }
             )
         }
     }

@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.lamti.beatsnakechallenge.ui.theme.Orange100
 
 @Composable
-fun Score(score: String, onSettingsClicked: () -> Unit) {
+fun Score(score: String, color: Color = MaterialTheme.colors.background, onSettingsClicked: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -32,15 +32,14 @@ fun Score(score: String, onSettingsClicked: () -> Unit) {
         Spacer(modifier = Modifier.weight(1f))
         Text(
             text = "score: $score",
-            style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.SemiBold),
-            color = MaterialTheme.colors.onBackground,
+            style = MaterialTheme.typography.h6.copy(color = color,fontWeight = FontWeight.SemiBold),
             modifier = Modifier.padding(end = 16.dp)
         )
         IconButton(onClick = onSettingsClicked) {
             Icon(
                 Icons.Filled.Settings,
                 contentDescription = "Settings button",
-                tint = Color.White
+                tint = color,
             )
         }
     }
