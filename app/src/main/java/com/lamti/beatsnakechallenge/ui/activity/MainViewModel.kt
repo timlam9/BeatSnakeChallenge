@@ -150,7 +150,7 @@ class MainViewModel(
 
     private fun getUsers() {
         viewModelScope.launch {
-            users = repository.getUsers()
+            users = repository.getUsers().sortedByDescending { it.highscore }
         }
     }
 
