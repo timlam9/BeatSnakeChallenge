@@ -26,7 +26,7 @@ class MainViewModelFactory(
     val game: Game
 ) : ViewModelProvider.Factory {
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             return MainViewModel(
                 repository = repository,
@@ -70,10 +70,6 @@ class MainViewModel(
 
     var snakeSpeed: SnakeSpeed by mutableStateOf(SnakeSpeed.Normal)
         private set
-
-    init {
-        getUsers()
-    }
 
     fun closeSettingsDialog() {
         showSettings = false
@@ -124,7 +120,6 @@ class MainViewModel(
         if (repository.getHighscore() < score) {
             repository.saveHighscore(score)
             updateHighscore()
-            getUsers()
         }
     }
 
@@ -140,7 +135,7 @@ class MainViewModel(
         }
     }
 
-    private fun getUsers() {
+    fun getUsers() {
         viewModelScope.launch {
             users = repository.getUsers().sortedByDescending { it.highscore }
         }

@@ -20,14 +20,14 @@ import com.lamti.beatsnakechallenge.snake.ui.MediaPlayerManager
 import com.lamti.beatsnakechallenge.snake.ui.SnakePreferences
 import com.lamti.beatsnakechallenge.main.activity.MainViewModel.Companion.HEIGHT
 import com.lamti.beatsnakechallenge.main.activity.MainViewModel.Companion.WIDTH
-import com.lamti.beatsnakechallenge.main.navigation.SnakeNavigation
-import com.lamti.beatsnakechallenge.main.theme.BeatSnakeChallengeTheme
+import com.lamti.beatsnakechallenge.main.navigation.BeatGamesNavigation
+import com.lamti.beatsnakechallenge.main.theme.BeatGamesTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 
-class MainActivity() : ComponentActivity() {
+class MainActivity : ComponentActivity() {
 
     private val mediaPlayerManager = MediaPlayerManager(this@MainActivity)
 
@@ -56,7 +56,7 @@ class MainActivity() : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            BeatSnakeChallengeTheme {
+            BeatGamesTheme {
                 Surface(color = MaterialTheme.colors.surface) {
                     MainActivityContent(viewModel = viewModel)
                 }
@@ -108,12 +108,15 @@ fun MainActivityContent(viewModel: MainViewModel) {
     val board by viewModel.board.collectAsState()
     val score by viewModel.score.collectAsState()
 
-    SnakeNavigation(
+    BeatGamesNavigation(
         user = user,
         users = viewModel.users,
         uploadUser = { viewModel.uploadUser(it) },
         onSettingsClicked = { viewModel.onSettingsClicked() },
-        onHighscoresClicked = { viewModel.closeSettingsDialog() },
+        onHighscoresClicked = {
+            viewModel.getUsers()
+            viewModel.closeSettingsDialog()
+        },
         currentSnakeSpeed = viewModel.snakeSpeed,
         currentController = viewModel.controllers,
         onSpeedChanged = { viewModel.changeSnakeSpeed(it) },

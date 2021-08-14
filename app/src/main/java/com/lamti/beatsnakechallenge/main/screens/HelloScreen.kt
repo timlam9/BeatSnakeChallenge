@@ -54,14 +54,14 @@ fun HelloScreen(onPlayClicked: (String) -> Unit = { }) {
             style = MaterialTheme.typography.h4.copy(color = Color.White, fontWeight = Bold)
         )
         Text(
-            text = stringResource(R.string.welcome_to_snake),
+            text = stringResource(R.string.welcome_to_beat_games),
             style = MaterialTheme.typography.h5.copy(color = Navy50)
         )
+        Spacer(modifier = Modifier.weight(1f))
         Text(
             text = stringResource(R.string.whats_your_name),
             style = MaterialTheme.typography.h5.copy(color = Navy50)
         )
-        Spacer(modifier = Modifier.weight(1f))
         NameTextField(text = text) {
             text = it
         }

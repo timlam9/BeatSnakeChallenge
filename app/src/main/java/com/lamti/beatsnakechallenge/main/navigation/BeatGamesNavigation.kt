@@ -6,19 +6,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.lamti.beatsnakechallenge.connect4.ConnectFourScreen
 import com.lamti.beatsnakechallenge.snake.data.User
 import com.lamti.beatsnakechallenge.snake.domain.Board
 import com.lamti.beatsnakechallenge.snake.domain.Point
 import com.lamti.beatsnakechallenge.snake.domain.SnakeControllers
 import com.lamti.beatsnakechallenge.snake.domain.SnakeSpeed
 import com.lamti.beatsnakechallenge.main.screens.HelloScreen
+import com.lamti.beatsnakechallenge.main.screens.MenuScreen
 import com.lamti.beatsnakechallenge.snake.ui.screens.HighscoresScreen
 import com.lamti.beatsnakechallenge.snake.ui.screens.SnakeScreen
 import com.lamti.beatsnakechallenge.snake.ui.screens.SnakeState
 
 @ExperimentalAnimationApi
 @Composable
-fun SnakeNavigation(
+fun BeatGamesNavigation(
     user: User,
     users: List<User>,
     uploadUser: (User) -> Unit,
@@ -37,7 +39,7 @@ fun SnakeNavigation(
     colorCell: (Point) -> Color
 ) {
     val navController = rememberNavController()
-    val initialRoute = if (user.name.isEmpty()) Screen.Hello.route else Screen.Snake.route
+    val initialRoute = if (user.name.isEmpty()) Screen.Hello.route else Screen.Menu.route
 
     NavHost(
         navController = navController,
@@ -48,8 +50,20 @@ fun SnakeNavigation(
         ) {
             HelloScreen { name ->
                 uploadUser(User(name = name))
-                navController.navigate(Screen.Snake.route)
+                navController.navigate(Screen.Menu.route) {
+                    popUpTo(Screen.Hello.route) {
+                        inclusive = true
+                    }
+                }
             }
+        }
+        composable(
+            route = Screen.Menu.route
+        ) {
+            MenuScreen(
+                onConnectFourClicked = { navController.navigate(Screen.Connect4.route)},
+                onSnakeClicked = { navController.navigate(Screen.Snake.route) }
+            )
         }
         composable(
             route = Screen.Snake.route
@@ -83,6 +97,11 @@ fun SnakeNavigation(
                 users = users,
                 id = user.id ?: ""
             )
+        }
+        composable(
+            route = Screen.Connect4.route
+        ) {
+            ConnectFourScreen()
         }
     }
 }
