@@ -37,23 +37,6 @@ import com.lamti.beatsnakechallenge.snake.domain.SnakeSpeed.Slow
 import com.lamti.beatsnakechallenge.main.theme.Orange100
 
 @Composable
-fun GameOverDialog(
-    score: Int,
-    restartGame: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = { restartGame() },
-        title = { Text(text = "Game Over") },
-        text = { Text("Final score: $score") },
-        confirmButton = {
-            Button(onClick = { restartGame() }) {
-                Text("Play again")
-            }
-        }
-    )
-}
-
-@Composable
 fun SettingsDialog(
     onSettingsClicked: () -> Unit,
     onHighscoresClicked: () -> Unit,

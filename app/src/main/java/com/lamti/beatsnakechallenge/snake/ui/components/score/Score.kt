@@ -1,4 +1,4 @@
-package com.lamti.beatsnakechallenge.snake.ui.components
+package com.lamti.beatsnakechallenge.snake.ui.components.score
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon

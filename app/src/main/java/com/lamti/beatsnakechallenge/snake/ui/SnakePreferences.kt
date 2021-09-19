@@ -35,7 +35,6 @@ class SnakePreferences(private val sharedPreferences: SharedPreferences) {
 
     fun getID(): String = sharedPreferences.getString(KEY_ID, "") ?: ""
 
-
     fun getHighscore(): Int = sharedPreferences.getInt(KEY_HIGHSCORE, 0)
 
 }

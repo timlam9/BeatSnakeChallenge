@@ -1,34 +1,29 @@
 package com.lamti.beatsnakechallenge.snake.ui.screens
 
 import androidx.compose.animation.animateColor
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import com.lamti.beatsnakechallenge.R
+import com.lamti.beatsnakechallenge.main.theme.Navy100
 import com.lamti.beatsnakechallenge.snake.domain.Board
 import com.lamti.beatsnakechallenge.snake.domain.Point
 import com.lamti.beatsnakechallenge.snake.domain.SnakeControllers
 import com.lamti.beatsnakechallenge.snake.domain.SnakeSpeed
-import com.lamti.beatsnakechallenge.snake.ui.components.Controllers
-import com.lamti.beatsnakechallenge.snake.ui.components.GameOverDialog
-import com.lamti.beatsnakechallenge.snake.ui.components.Score
-import com.lamti.beatsnakechallenge.snake.ui.components.SettingsDialog
 import com.lamti.beatsnakechallenge.snake.ui.CRASH_ANIMATION_DURATION
-import com.lamti.beatsnakechallenge.main.theme.Navy100
+import com.lamti.beatsnakechallenge.snake.ui.components.controllers.Controllers
+import com.lamti.beatsnakechallenge.snake.ui.components.score.Score
+import com.lamti.beatsnakechallenge.snake.ui.components.SettingsDialog
+import com.lamti.beatsnakechallenge.snake.ui.components.board.SnakeBoard
+import com.lamti.beatsnakechallenge.snake.ui.components.dialogs.GameOverDialog
 
 data class SnakeState(
     val score: Int,
@@ -51,8 +46,6 @@ fun SnakeScreen(
     onChangeDirection: (Board.Direction) -> Unit,
     restartGame: () -> Unit
 ) {
-
-
     val animatedColor = crashAnimatedColor()
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -100,46 +93,4 @@ private fun crashAnimatedColor(): State<Color> {
             repeatMode = RepeatMode.Reverse
         )
     )
-}
-
-@Composable
-fun SnakeBoard(board: Board, colorCell: (Point) -> Color) {
-    Column(
-        modifier = Modifier
-            .padding(10.dp)
-            .border(
-                border = BorderStroke(
-                    width = 2.dp,
-                    color = MaterialTheme.colors.background
-                ),
-                shape = RoundedCornerShape(2)
-            )
-            .padding(4.dp)
-    ) {
-        board.grid.forEach { row ->
-            Row(modifier = Modifier.fillMaxWidth()) {
-                row.forEach { point ->
-                    Cell(
-                        modifier = Modifier.weight(1f),
-                        color = colorCell(point)
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun Cell(modifier: Modifier, color: Color = MaterialTheme.colors.background) {
-    Box(
-        modifier = modifier
-            .clip(CircleShape)
-            .background(color)
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_beat),
-            tint = Color.White,
-            contentDescription = null
-        )
-    }
 }
