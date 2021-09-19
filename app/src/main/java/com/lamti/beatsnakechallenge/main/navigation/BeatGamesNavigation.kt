@@ -6,7 +6,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.lamti.beatsnakechallenge.connect4.ConnectFourScreen
+import com.lamti.beatsnakechallenge.connect4.ui.ConnectFourScreen
 import com.lamti.beatsnakechallenge.snake.data.User
 import com.lamti.beatsnakechallenge.snake.domain.Board
 import com.lamti.beatsnakechallenge.snake.domain.Point

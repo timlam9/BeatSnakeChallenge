@@ -51,7 +51,10 @@ fun HelloScreen(onPlayClicked: (String) -> Unit = { }) {
         Spacer(modifier = Modifier.weight(0.5f))
         Text(
             text = stringResource(R.string.hello_there),
-            style = MaterialTheme.typography.h4.copy(color = Color.White, fontWeight = Bold)
+            style = MaterialTheme.typography.h4.copy(
+                color = MaterialTheme.colors.background,
+                fontWeight = Bold
+            )
         )
         Text(
             text = stringResource(R.string.welcome_to_beat_games),

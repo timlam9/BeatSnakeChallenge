@@ -1,0 +1,13 @@
+package com.lamti.beatsnakechallenge.connect4.domain
+
+data class Slot(
+    val index: Int,
+    val availability: Availability = Availability.Available
+) {
+
+    fun claim(turn: Turn): Slot = when (turn) {
+        Turn.Player -> Slot(index = index, availability = Availability.Player)
+        Turn.Opponent -> Slot(index = index, availability = Availability.Opponent)
+    }
+
+}

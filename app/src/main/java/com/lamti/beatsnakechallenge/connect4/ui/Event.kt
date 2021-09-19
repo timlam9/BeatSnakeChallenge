@@ -1,4 +1,4 @@
-package com.lamti.beatsnakechallenge.connect4
+package com.lamti.beatsnakechallenge.connect4.ui
 
 sealed class Event {
 

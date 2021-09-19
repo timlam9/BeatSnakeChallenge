@@ -37,7 +37,10 @@ fun MenuScreen(onConnectFourClicked: () -> Unit, onSnakeClicked: () -> Unit) {
         Spacer(modifier = Modifier.weight(0.25f))
         Text(
             text = stringResource(R.string.beat_games),
-            style = MaterialTheme.typography.h4.copy(color = Color.White, fontWeight = Bold)
+            style = MaterialTheme.typography.h4.copy(
+                color = MaterialTheme.colors.background,
+                fontWeight = Bold
+            )
         )
         Text(
             text = stringResource(R.string.what_do_you_play),

@@ -1,15 +1,20 @@
-package com.lamti.beatsnakechallenge.connect4
+package com.lamti.beatsnakechallenge.connect4.ui
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.lamti.beatsnakechallenge.connect4.Event.OnColumnClicked
-import com.lamti.beatsnakechallenge.connect4.GameStatus.Draw
-import com.lamti.beatsnakechallenge.connect4.GameStatus.OpponentWon
-import com.lamti.beatsnakechallenge.connect4.GameStatus.PlayerWon
-import com.lamti.beatsnakechallenge.connect4.GameStatus.Playing
-import com.lamti.beatsnakechallenge.connect4.Turn.Player
+import com.lamti.beatsnakechallenge.connect4.domain.Availability
+import com.lamti.beatsnakechallenge.connect4.domain.Board
+import com.lamti.beatsnakechallenge.connect4.domain.ConnectFourState
+import com.lamti.beatsnakechallenge.connect4.domain.Error
+import com.lamti.beatsnakechallenge.connect4.ui.Event.OnColumnClicked
+import com.lamti.beatsnakechallenge.connect4.domain.GameStatus
+import com.lamti.beatsnakechallenge.connect4.domain.GameStatus.Draw
+import com.lamti.beatsnakechallenge.connect4.domain.GameStatus.OpponentWon
+import com.lamti.beatsnakechallenge.connect4.domain.GameStatus.PlayerWon
+import com.lamti.beatsnakechallenge.connect4.domain.GameStatus.Playing
+import com.lamti.beatsnakechallenge.connect4.domain.Turn.Player
 
 class ConnectFourViewModel : ViewModel() {
 
@@ -134,7 +139,7 @@ class ConnectFourViewModel : ViewModel() {
         val (board, error) = try {
             Pair(state.board.update(columnIndex, state.turn), null)
         } catch (exception: ColumnAlreadyFilledException) {
-            Pair(state.board, Error(exception.message))
+            Pair(state.board, Error(ColumnAlreadyFilledException.message))
         }
         val gameStatus = updateGameStatus(board)
         val turn = if (error == null && gameStatus == Playing) state.turn.next() else state.turn
