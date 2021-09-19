@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.lamti.beatsnakechallenge.snake.data.SnakeRepository
 import com.lamti.beatsnakechallenge.snake.data.User
@@ -20,23 +19,6 @@ import com.lamti.beatsnakechallenge.main.theme.Navy100
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
-class MainViewModelFactory(
-    val repository: SnakeRepository,
-    val game: Game
-) : ViewModelProvider.Factory {
-
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-            return MainViewModel(
-                repository = repository,
-                game = game
-            ) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-
-}
 
 class MainViewModel(
     val repository: SnakeRepository,
@@ -142,4 +124,3 @@ class MainViewModel(
     }
 
 }
-
