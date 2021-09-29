@@ -109,23 +109,9 @@ fun MainActivityContent(viewModel: MainViewModel) {
     val score by viewModel.score.collectAsState()
 
     BeatGamesNavigation(
+        viewModel = viewModel,
         user = user,
-        users = viewModel.users,
-        uploadUser = { viewModel.uploadUser(it) },
-        onSettingsClicked = { viewModel.onSettingsClicked() },
-        onHighscoresClicked = {
-            viewModel.getUsers()
-            viewModel.closeSettingsDialog()
-        },
-        currentSnakeSpeed = viewModel.snakeSpeed,
-        currentController = viewModel.controllers,
-        onSpeedChanged = { viewModel.changeSnakeSpeed(it) },
-        onControllerChanged = { viewModel.setController(it) },
         board = board,
         score = score,
-        showSettings = viewModel.showSettings,
-        onChangeDirection = { viewModel.changeDirection(it) },
-        restartGame = { viewModel.restartGame() },
-        gameOver = { viewModel.gameOver(it) }
-    ) { viewModel.colorCell(it) }
+    )
 }

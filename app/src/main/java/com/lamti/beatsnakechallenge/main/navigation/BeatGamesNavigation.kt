@@ -3,10 +3,13 @@ package com.lamti.beatsnakechallenge.main.navigation
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.lamti.beatsnakechallenge.connect4.ui.ConnectFourScreen
+import com.lamti.beatsnakechallenge.connect4.ui.ConnectFourViewModel
+import com.lamti.beatsnakechallenge.main.activity.MainViewModel
 import com.lamti.beatsnakechallenge.snake.data.User
 import com.lamti.beatsnakechallenge.snake.domain.Board
 import com.lamti.beatsnakechallenge.snake.domain.Point
@@ -21,22 +24,10 @@ import com.lamti.beatsnakechallenge.snake.ui.screens.SnakeState
 @ExperimentalAnimationApi
 @Composable
 fun BeatGamesNavigation(
+    viewModel: MainViewModel,
     user: User,
-    users: List<User>,
-    uploadUser: (User) -> Unit,
-    onSettingsClicked: () -> Unit,
-    onHighscoresClicked: () -> Unit,
-    currentSnakeSpeed: SnakeSpeed,
-    currentController: SnakeControllers,
-    onSpeedChanged: (SnakeSpeed) -> Unit,
-    onControllerChanged: (SnakeControllers) -> Unit,
     board: Board,
-    score: Int,
-    showSettings: Boolean,
-    onChangeDirection: (Board.Direction) -> Unit,
-    restartGame: () -> Unit,
-    gameOver: (Int) -> Unit,
-    colorCell: (Point) -> Color
+    score: Int
 ) {
     val navController = rememberNavController()
     val initialRoute = if (user.name.isEmpty()) Screen.Hello.route else Screen.Menu.route
@@ -49,7 +40,7 @@ fun BeatGamesNavigation(
             route = Screen.Hello.route
         ) {
             HelloScreen { name ->
-                uploadUser(User(name = name))
+                viewModel.uploadUser(User(name = name))
                 navController.navigate(Screen.Menu.route) {
                     popUpTo(Screen.Hello.route) {
                         inclusive = true
@@ -61,7 +52,7 @@ fun BeatGamesNavigation(
             route = Screen.Menu.route
         ) {
             MenuScreen(
-                onConnectFourClicked = { navController.navigate(Screen.Connect4.route)},
+                onConnectFourClicked = { navController.navigate(Screen.Connect4.route) },
                 onSnakeClicked = { navController.navigate(Screen.Snake.route) }
             )
         }
@@ -72,31 +63,28 @@ fun BeatGamesNavigation(
                 snakeState = SnakeState(
                     score = score,
                     board = board,
-                    controllers = currentController,
-                    showSettings = showSettings,
-                    snakeSpeed = currentSnakeSpeed
+                    controllers = viewModel.controllers,
+                    showSettings = viewModel.showSettings,
+                    snakeSpeed = viewModel.snakeSpeed
                 ),
-                onSettingsClicked = { onSettingsClicked() },
+                onSettingsClicked = { viewModel.onSettingsClicked() },
                 onHighscoresClicked = {
-                    onHighscoresClicked()
+                    viewModel.closeSettingsDialog()
                     navController.navigate(Screen.Highscores.route)
                 },
                 highscore = user.highscore,
-                onSpeedChanged = { onSpeedChanged(it) },
-                onControllerChanged = { onControllerChanged(it) },
-                onChangeDirection = { onChangeDirection(it) },
-                restartGame = restartGame,
-                gameOver = { gameOver(it) },
-                colorCell = { colorCell(it) }
+                onSpeedChanged = { viewModel.changeSnakeSpeed(it) },
+                onControllerChanged = { viewModel.setController(it) },
+                onChangeDirection = { viewModel.changeDirection(it) },
+                restartGame = { viewModel.restartGame() },
+                gameOver = { viewModel.gameOver(it) },
+                colorCell = { viewModel.colorCell(it) }
             )
         }
         composable(
             route = Screen.Highscores.route
         ) {
-            HighscoresScreen(
-                users = users,
-                id = user.id ?: ""
-            )
+            HighscoresScreen(viewModel = viewModel, id = user.id ?: "")
         }
         composable(
             route = Screen.Connect4.route

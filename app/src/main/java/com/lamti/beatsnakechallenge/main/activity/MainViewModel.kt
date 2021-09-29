@@ -1,11 +1,15 @@
 package com.lamti.beatsnakechallenge.main.activity
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lamti.beatsnakechallenge.main.theme.Mint100
+import com.lamti.beatsnakechallenge.main.theme.MintBlend14
+import com.lamti.beatsnakechallenge.main.theme.Navy100
 import com.lamti.beatsnakechallenge.snake.data.SnakeRepository
 import com.lamti.beatsnakechallenge.snake.data.User
 import com.lamti.beatsnakechallenge.snake.domain.Board
@@ -13,9 +17,7 @@ import com.lamti.beatsnakechallenge.snake.domain.Game
 import com.lamti.beatsnakechallenge.snake.domain.Point
 import com.lamti.beatsnakechallenge.snake.domain.SnakeControllers
 import com.lamti.beatsnakechallenge.snake.domain.SnakeSpeed
-import com.lamti.beatsnakechallenge.main.theme.Mint100
-import com.lamti.beatsnakechallenge.main.theme.MintBlend14
-import com.lamti.beatsnakechallenge.main.theme.Navy100
+import com.lamti.beatsnakechallenge.snake.ui.UsersViewState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -34,14 +36,14 @@ class MainViewModel(
 
     private fun getUser(): User = User(repository.getID(), repository.getUsername(), repository.getHighscore())
 
-    private val _user = MutableStateFlow(getUser())
-    val user: StateFlow<User> = _user
-
     val running: StateFlow<Boolean> = game.running
     val board: StateFlow<Board> = game.board
     val score: StateFlow<Int> = game.score
 
-    var users: List<User> by mutableStateOf(emptyList())
+    private val _user = MutableStateFlow(getUser())
+    val user: StateFlow<User> = _user
+
+    var usersState: MutableState<UsersViewState> = mutableStateOf(UsersViewState.Loading)
         private set
 
     var controllers: SnakeControllers by mutableStateOf(SnakeControllers.PieController)
@@ -119,7 +121,7 @@ class MainViewModel(
 
     fun getUsers() {
         viewModelScope.launch {
-            users = repository.getUsers().sortedByDescending { it.highscore }
+            usersState.value = repository.getUsers()
         }
     }
 

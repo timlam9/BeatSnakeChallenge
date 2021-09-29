@@ -4,6 +4,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.google.gson.GsonBuilder
 import com.google.gson.Gson
+import com.lamti.beatsnakechallenge.snake.ui.UsersViewState
 import com.lamti.beatsnakechallenge.snake.ui.SnakePreferences
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
@@ -23,9 +24,9 @@ class SnakeRepository(private val preferences: SnakePreferences) {
     private val api = Retrofit.Builder()
         .client(
             OkHttpClient().newBuilder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS).build()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS).build()
         )
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create(gson))
@@ -34,7 +35,11 @@ class SnakeRepository(private val preferences: SnakePreferences) {
 
     suspend fun updateUser(user: User): String = api.updateUser(user)
 
-    suspend fun getUsers(): List<User> = api.getUsers()
+    suspend fun getUsers(): UsersViewState = try {
+        UsersViewState.Success(api.getUsers().sortedByDescending { it.highscore })
+    } catch (e: Exception) {
+        UsersViewState.Error(e.message ?: "error")
+    }
 
     fun saveUserID(id: String) {
         preferences.saveUserID(id)
