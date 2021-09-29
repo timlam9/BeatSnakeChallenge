@@ -1,7 +1,11 @@
 package com.lamti.beatsnakechallenge.snake.ui.components.controllers
 
 import androidx.compose.runtime.Composable
-import com.lamti.beatsnakechallenge.snake.domain.Board
+import com.lamti.beatsnakechallenge.snake.domain.Board.Direction
+import com.lamti.beatsnakechallenge.snake.domain.Board.Direction.Down
+import com.lamti.beatsnakechallenge.snake.domain.Board.Direction.Left
+import com.lamti.beatsnakechallenge.snake.domain.Board.Direction.Right
+import com.lamti.beatsnakechallenge.snake.domain.Board.Direction.Up
 import com.lamti.beatsnakechallenge.snake.domain.SnakeControllers
 import com.lamti.beatsnakechallenge.snake.ui.components.controllers.joystick.Joystick
 import com.lamti.beatsnakechallenge.snake.ui.components.controllers.piestick.PieController
@@ -9,24 +13,24 @@ import com.lamti.beatsnakechallenge.snake.ui.components.controllers.piestick.Pie
 @Composable
 fun Controllers(
     controllers: SnakeControllers,
-    onChangeDirection: (Board.Direction) -> Unit,
+    onChangeDirection: (Direction) -> Unit,
     restartGame: () -> Unit
 ) {
     when (controllers) {
         SnakeControllers.PieController -> {
             PieController(
-                onUpClick = { onChangeDirection(Board.Direction.Up) },
-                onLeftClick = { onChangeDirection(Board.Direction.Left) },
-                onRightClick = { onChangeDirection(Board.Direction.Right) },
-                onDownClick = { onChangeDirection(Board.Direction.Down) }
+                onUpClick = { onChangeDirection(Up) },
+                onLeftClick = { onChangeDirection(Left) },
+                onRightClick = { onChangeDirection(Right) },
+                onDownClick = { onChangeDirection(Down) }
             )
         }
         SnakeControllers.Joystick -> {
             Joystick(
-                onUpClick = { onChangeDirection(Board.Direction.Up) },
-                onLeftClick = { onChangeDirection(Board.Direction.Left) },
-                onRightClick = { onChangeDirection(Board.Direction.Right) },
-                onDownClick = { onChangeDirection(Board.Direction.Down) },
+                onUpClick = { onChangeDirection(Up) },
+                onLeftClick = { onChangeDirection(Left) },
+                onRightClick = { onChangeDirection(Right) },
+                onDownClick = { onChangeDirection(Down) },
                 onCenterClick = { restartGame() }
             )
         }

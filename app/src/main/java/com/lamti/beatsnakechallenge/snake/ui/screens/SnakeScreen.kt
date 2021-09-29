@@ -19,19 +19,12 @@ import com.lamti.beatsnakechallenge.snake.domain.Point
 import com.lamti.beatsnakechallenge.snake.domain.SnakeControllers
 import com.lamti.beatsnakechallenge.snake.domain.SnakeSpeed
 import com.lamti.beatsnakechallenge.snake.ui.CRASH_ANIMATION_DURATION
-import com.lamti.beatsnakechallenge.snake.ui.components.controllers.Controllers
-import com.lamti.beatsnakechallenge.snake.ui.components.score.Score
-import com.lamti.beatsnakechallenge.snake.ui.components.dialogs.SettingsDialog
+import com.lamti.beatsnakechallenge.snake.ui.SnakeState
 import com.lamti.beatsnakechallenge.snake.ui.components.board.SnakeBoard
+import com.lamti.beatsnakechallenge.snake.ui.components.controllers.Controllers
 import com.lamti.beatsnakechallenge.snake.ui.components.dialogs.GameOverDialog
-
-data class SnakeState(
-    val score: Int,
-    val board: Board,
-    val controllers: SnakeControllers,
-    val showSettings: Boolean,
-    val snakeSpeed: SnakeSpeed
-)
+import com.lamti.beatsnakechallenge.snake.ui.components.dialogs.SettingsDialog
+import com.lamti.beatsnakechallenge.snake.ui.components.score.Score
 
 @Composable
 fun SnakeScreen(

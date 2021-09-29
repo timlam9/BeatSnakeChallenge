@@ -1,27 +1,19 @@
 package com.lamti.beatsnakechallenge.main.navigation
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.lamti.beatsnakechallenge.connect4.ui.ConnectFourScreen
-import com.lamti.beatsnakechallenge.connect4.ui.ConnectFourViewModel
 import com.lamti.beatsnakechallenge.main.activity.MainViewModel
-import com.lamti.beatsnakechallenge.snake.data.User
-import com.lamti.beatsnakechallenge.snake.domain.Board
-import com.lamti.beatsnakechallenge.snake.domain.Point
-import com.lamti.beatsnakechallenge.snake.domain.SnakeControllers
-import com.lamti.beatsnakechallenge.snake.domain.SnakeSpeed
 import com.lamti.beatsnakechallenge.main.screens.HelloScreen
 import com.lamti.beatsnakechallenge.main.screens.MenuScreen
+import com.lamti.beatsnakechallenge.snake.data.User
+import com.lamti.beatsnakechallenge.snake.domain.Board
+import com.lamti.beatsnakechallenge.snake.ui.SnakeState
 import com.lamti.beatsnakechallenge.snake.ui.screens.HighscoresScreen
 import com.lamti.beatsnakechallenge.snake.ui.screens.SnakeScreen
-import com.lamti.beatsnakechallenge.snake.ui.screens.SnakeState
 
-@ExperimentalAnimationApi
 @Composable
 fun BeatGamesNavigation(
     viewModel: MainViewModel,

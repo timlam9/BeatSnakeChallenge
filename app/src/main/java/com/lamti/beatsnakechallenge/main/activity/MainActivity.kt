@@ -1,5 +1,6 @@
 package com.lamti.beatsnakechallenge.main.activity
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -52,7 +53,6 @@ class MainActivity : ComponentActivity() {
         ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
     }
 
-    @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -77,6 +77,7 @@ class MainActivity : ComponentActivity() {
         mediaPlayerManager.pauseBackgroundMusic()
     }
 
+    @SuppressLint("LogNotTimber")
     private fun updateGameLoop() {
         lifecycleScope.launchWhenResumed {
             while (isActive) {
@@ -101,7 +102,6 @@ class MainActivity : ComponentActivity() {
 
 }
 
-@ExperimentalAnimationApi
 @Composable
 fun MainActivityContent(viewModel: MainViewModel) {
     val user by viewModel.user.collectAsState()

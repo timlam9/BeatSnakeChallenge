@@ -1,5 +1,9 @@
 package com.lamti.beatsnakechallenge.snake.domain
 
+import com.lamti.beatsnakechallenge.snake.domain.Board.Direction.Down
+import com.lamti.beatsnakechallenge.snake.domain.Board.Direction.Left
+import com.lamti.beatsnakechallenge.snake.domain.Board.Direction.Right
+import com.lamti.beatsnakechallenge.snake.domain.Board.Direction.Up
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -17,11 +21,12 @@ class Game(private val height: Int, private val width: Int) {
     private val _running: MutableStateFlow<Boolean> = MutableStateFlow(true)
     val running: StateFlow<Boolean> = _running
 
-    private val _board: MutableStateFlow<Board> =
-        MutableStateFlow(pointManager.generateInitialBoard())
+    private val _board: MutableStateFlow<Board> = MutableStateFlow(pointManager.generateInitialBoard())
     val board: StateFlow<Board> = _board
 
     val score: StateFlow<Int> = scoreManager.score
+
+    var canChangeDirection = true
 
     fun update() {
         val futureDriver = _board.value.driver.update(
@@ -40,17 +45,21 @@ class Game(private val height: Int, private val width: Int) {
             driver = futureDriver,
             passenger = updatePassenger(futureDriver)
         )
+        canChangeDirection = true
     }
 
-
     fun changeDirection(direction: Board.Direction) {
+        if (!canChangeDirection) return
+
+        val previousDirection = _board.value.direction
         when (direction) {
-            Board.Direction.Right -> if (_board.value.direction == Board.Direction.Left) return
-            Board.Direction.Down -> if (_board.value.direction == Board.Direction.Up) return
-            Board.Direction.Left -> if (_board.value.direction == Board.Direction.Right) return
-            Board.Direction.Up -> if (_board.value.direction == Board.Direction.Down) return
+            Right -> if (previousDirection == Left) return
+            Down -> if (previousDirection == Up) return
+            Left -> if (previousDirection == Right) return
+            Up -> if (previousDirection == Down) return
         }
         _board.value = _board.value.copy(direction = direction)
+        canChangeDirection = false
     }
 
     private fun updatePassenger(futureDriver: Driver) =

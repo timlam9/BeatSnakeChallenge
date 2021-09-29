@@ -13,12 +13,7 @@ data class Board(
         Right,
         Down,
         Left,
-        Up;
-
-        fun nextItem(): Direction = if (this.ordinal + 1 == values().size)
-            values()[0]
-        else
-            values()[this.ordinal + 1]
+        Up
     }
 
 }
