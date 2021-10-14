@@ -43,14 +43,6 @@ data class Driver(
         )
     }
 
-    private fun updateBody(): List<Point> = body.mapIndexed { index, _ ->
-        if (index == 0) {
-            head
-        } else {
-            body[index - 1]
-        }
-    }
-
     private fun updateBody(willBoardPassenger: Boolean): List<Point> {
         val newBody = body.mapIndexed { index, _ ->
             if (index == 0) {
