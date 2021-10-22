@@ -4,152 +4,95 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.lamti.beatsnakechallenge.connect4.domain.Availability
+import androidx.lifecycle.viewModelScope
+import com.lamti.beatsnakechallenge.connect4.data.GameOverStatus
+import com.lamti.beatsnakechallenge.connect4.data.SocketMessage
+import com.lamti.beatsnakechallenge.connect4.data.SocketMessage.Move
+import com.lamti.beatsnakechallenge.connect4.data.WebSocket
 import com.lamti.beatsnakechallenge.connect4.domain.Board
 import com.lamti.beatsnakechallenge.connect4.domain.ConnectFourState
 import com.lamti.beatsnakechallenge.connect4.domain.Error
-import com.lamti.beatsnakechallenge.connect4.ui.Event.OnColumnClicked
 import com.lamti.beatsnakechallenge.connect4.domain.GameStatus
-import com.lamti.beatsnakechallenge.connect4.domain.GameStatus.Draw
-import com.lamti.beatsnakechallenge.connect4.domain.GameStatus.OpponentWon
-import com.lamti.beatsnakechallenge.connect4.domain.GameStatus.PlayerWon
 import com.lamti.beatsnakechallenge.connect4.domain.GameStatus.Playing
+import com.lamti.beatsnakechallenge.connect4.domain.Turn
+import com.lamti.beatsnakechallenge.connect4.domain.Turn.Opponent
 import com.lamti.beatsnakechallenge.connect4.domain.Turn.Player
+import com.lamti.beatsnakechallenge.connect4.ui.Event.OnColumnClicked
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class ConnectFourViewModel : ViewModel() {
 
-    var state: ConnectFourState by mutableStateOf(newGame())
+    private val webSocket = WebSocket()
+    private var userID = ""
+
+    var state: ConnectFourState by mutableStateOf(
+        ConnectFourState(
+            turn = Player,
+            board = Board.generateEmptyBoard()
+        )
+    )
         private set
 
+    init {
+        webSocket.start(viewModelScope)
+        webSocket.messages.onEach {
+            when (val message = it) {
+                is SocketMessage.StartTurn -> {
+                    state = state.copy(
+                        board = message.board,
+                        turn = message.turn,
+                        gameStatus = Playing
+                    )
+                    userID = message.userID
+                }
+                is Move -> Unit
+                is SocketMessage.PlayerTurn -> {
+                    state = state.copy(
+                        board = message.board,
+                        turn = message.turn
+                    )
+                }
+                is SocketMessage.GameOver -> {
+                    state = state.copy(
+                        board = message.board,
+                        gameStatus = message.winner.toGameStatus(message.turn)
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        webSocket.closeSocket()
+    }
+
     fun onEvent(event: Event) {
-        state = when (event) {
-            is OnColumnClicked -> handleMove(event.index)
-            Event.OnRestartClicked -> newGame()
+        when (event) {
+            is OnColumnClicked -> {
+                if (state.turn == Opponent) return
+                webSocket.sendMessage(Move(userID, event.index))
+            }
+            Event.OnRestartClicked -> Unit
         }
     }
 
-    private fun newGame() = ConnectFourState(
-        turn = Player,
-        board = Board.generateEmptyBoard()
-    )
-
-    private fun updateGameStatus(board: Board): GameStatus {
-        val width = board.columns.size
-        val height = board.columns.first().slots.size
-
-        // Horizontally score 4
-        for (columnIndex in 0 until width - 3) {
-            for (rowIndex in 0 until height) {
-                if (
-                    board.columns[columnIndex].slots[rowIndex].availability == Availability.Player &&
-                    board.columns[columnIndex + 1].slots[rowIndex].availability == Availability.Player &&
-                    board.columns[columnIndex + 2].slots[rowIndex].availability == Availability.Player &&
-                    board.columns[columnIndex + 3].slots[rowIndex].availability == Availability.Player
-                ) {
-                    return PlayerWon
-                } else if (
-                    board.columns[columnIndex].slots[rowIndex].availability == Availability.Opponent &&
-                    board.columns[columnIndex + 1].slots[rowIndex].availability == Availability.Opponent &&
-                    board.columns[columnIndex + 2].slots[rowIndex].availability == Availability.Opponent &&
-                    board.columns[columnIndex + 3].slots[rowIndex].availability == Availability.Opponent
-                ) {
-                    return OpponentWon
-                }
-            }
-        }
-
-        // Vertically score 4
-        for (rowIndex in 0 until height - 3) {
-            for (columnIndex in 0 until width) {
-                if (
-                    board.columns[columnIndex].slots[rowIndex].availability == Availability.Opponent &&
-                    board.columns[columnIndex].slots[rowIndex + 1].availability == Availability.Opponent &&
-                    board.columns[columnIndex].slots[rowIndex + 2].availability == Availability.Opponent &&
-                    board.columns[columnIndex].slots[rowIndex + 3].availability == Availability.Opponent
-                ) {
-                    return OpponentWon
-                } else if (
-                    board.columns[columnIndex].slots[rowIndex].availability == Availability.Player &&
-                    board.columns[columnIndex].slots[rowIndex + 1].availability == Availability.Player &&
-                    board.columns[columnIndex].slots[rowIndex + 2].availability == Availability.Player &&
-                    board.columns[columnIndex].slots[rowIndex + 3].availability == Availability.Player
-                ) {
-                    return PlayerWon
-                }
-            }
-        }
-
-        // Ascending diagonally score 4
-        for (columnIndex in 3 until width) {
-            for (rowIndex in 0 until height - 3) {
-                if (
-                    board.columns[columnIndex].slots[rowIndex].availability == Availability.Player &&
-                    board.columns[columnIndex - 1].slots[rowIndex + 1].availability == Availability.Player &&
-                    board.columns[columnIndex - 2].slots[rowIndex + 2].availability == Availability.Player &&
-                    board.columns[columnIndex - 3].slots[rowIndex + 3].availability == Availability.Player
-                ) {
-                    return PlayerWon
-                } else if (
-                    board.columns[columnIndex].slots[rowIndex].availability == Availability.Opponent &&
-                    board.columns[columnIndex - 1].slots[rowIndex + 1].availability == Availability.Opponent &&
-                    board.columns[columnIndex - 2].slots[rowIndex + 2].availability == Availability.Opponent &&
-                    board.columns[columnIndex - 3].slots[rowIndex + 3].availability == Availability.Opponent
-                ) {
-                    return OpponentWon
-                }
-            }
-        }
-
-        // Descending diagonally score 4
-        for (columnIndex in 3 until width) {
-            for (rowIndex in 3 until height) {
-                if (
-                    board.columns[columnIndex].slots[rowIndex].availability == Availability.Player &&
-                    board.columns[columnIndex - 1].slots[rowIndex - 1].availability == Availability.Player &&
-                    board.columns[columnIndex - 2].slots[rowIndex - 2].availability == Availability.Player &&
-                    board.columns[columnIndex - 3].slots[rowIndex - 3].availability == Availability.Player
-                ) {
-                    return PlayerWon
-                } else if (
-                    board.columns[columnIndex].slots[rowIndex].availability == Availability.Opponent &&
-                    board.columns[columnIndex - 1].slots[rowIndex - 1].availability == Availability.Opponent &&
-                    board.columns[columnIndex - 2].slots[rowIndex - 2].availability == Availability.Opponent &&
-                    board.columns[columnIndex - 3].slots[rowIndex - 3].availability == Availability.Opponent
-                ) {
-                    return OpponentWon
-                }
-            }
-        }
-
-        // Draw
-        if (
-            board.columns.all { column ->
-                column.slots.all { slot ->
-                    slot.availability != Availability.Available
-                }
-            }
-        ) {
-            return Draw
-        }
-
-        return Playing
-    }
-
-    private fun handleMove(columnIndex: Int): ConnectFourState {
+    private fun handleMove(columnIndex: Int) {
         val (board, error) = try {
             Pair(state.board.update(columnIndex, state.turn), null)
         } catch (exception: ColumnAlreadyFilledException) {
             Pair(state.board, Error(ColumnAlreadyFilledException.message))
         }
-        val gameStatus = updateGameStatus(board)
-        val turn = if (error == null && gameStatus == Playing) state.turn.next() else state.turn
-
-        return state.copy(
-            board = board,
-            turn = turn,
-            error = error,
-            gameStatus = gameStatus
-        )
     }
 
 }
+
+private fun GameOverStatus.toGameStatus(turn: Turn): GameStatus = when (this) {
+    GameOverStatus.Won -> when(turn) {
+        Player -> GameStatus.OpponentWon
+        Opponent -> GameStatus.PlayerWon
+    }
+    GameOverStatus.Draw -> GameStatus.Draw
+}
+

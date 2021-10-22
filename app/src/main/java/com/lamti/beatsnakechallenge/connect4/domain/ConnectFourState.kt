@@ -4,5 +4,5 @@ data class ConnectFourState(
     val turn: Turn,
     val board: Board,
     val error: Error? = null,
-    val gameStatus: GameStatus = GameStatus.Playing
+    val gameStatus: GameStatus = GameStatus.SearchingOpponent
 )

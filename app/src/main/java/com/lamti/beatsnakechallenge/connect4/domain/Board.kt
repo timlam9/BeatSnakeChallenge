@@ -1,7 +1,9 @@
 package com.lamti.beatsnakechallenge.connect4.domain
 
 import com.lamti.beatsnakechallenge.connect4.ui.ColumnAlreadyFilledException
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Board(val columns: List<Column>) {
 
     companion object {

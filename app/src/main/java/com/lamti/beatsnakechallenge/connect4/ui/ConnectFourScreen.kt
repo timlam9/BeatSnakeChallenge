@@ -11,20 +11,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lamti.beatsnakechallenge.connect4.domain.ConnectFourState
+import com.lamti.beatsnakechallenge.connect4.domain.GameStatus
 import com.lamti.beatsnakechallenge.connect4.domain.GameStatus.Playing
-import com.lamti.beatsnakechallenge.connect4.ui.components.board.Board
 import com.lamti.beatsnakechallenge.connect4.ui.components.ErrorMessage
 import com.lamti.beatsnakechallenge.connect4.ui.components.InfoText
 import com.lamti.beatsnakechallenge.connect4.ui.components.PlayAgainButton
 import com.lamti.beatsnakechallenge.connect4.ui.components.WinningMessage
+import com.lamti.beatsnakechallenge.connect4.ui.components.board.Board
+import com.lamti.beatsnakechallenge.snake.ui.screens.LoadingIndicator
 
 @Composable
 fun ConnectFourScreen(viewModel: ConnectFourViewModel = viewModel()) {
-    ConnectFourScreen(
-        state = viewModel.state,
-        onColumnClicked = { viewModel.onEvent(Event.OnColumnClicked(it)) },
-        onRestartClicked = { viewModel.onEvent(Event.OnRestartClicked) }
-    )
+    if (viewModel.state.gameStatus == GameStatus.SearchingOpponent) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Spacer(modifier = Modifier.height(100.dp))
+            InfoText(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                text = viewModel.state.gameStatus.getMessage()
+            )
+            LoadingIndicator()
+        }
+    } else {
+        ConnectFourScreen(
+            state = viewModel.state,
+            onColumnClicked = { viewModel.onEvent(Event.OnColumnClicked(it)) },
+            onRestartClicked = { viewModel.onEvent(Event.OnRestartClicked) }
+        )
+    }
 }
 
 @Composable

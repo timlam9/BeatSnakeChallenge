@@ -1,5 +1,8 @@
 package com.lamti.beatsnakechallenge.connect4.domain
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Slot(
     val index: Int,
     val availability: Availability = Availability.Available
