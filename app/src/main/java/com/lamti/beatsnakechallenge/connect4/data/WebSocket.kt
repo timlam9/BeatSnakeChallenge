@@ -17,11 +17,8 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
-import okio.ByteString
 
-class WebSocket(
-    private val client: OkHttpClient = OkHttpClient()
-) {
+class WebSocket {
 
     private lateinit var webSocket: WebSocket
 
@@ -31,6 +28,7 @@ class WebSocket(
     fun start(coroutineScope: CoroutineScope) {
         Log.d("TAGARA", "start")
         val request: Request = Request.Builder().url(WEB_SOCKET_URL).build()
+        val client = OkHttpClient()
         webSocket = client.newWebSocket(request, object : WebSocketListener() {
 
             override fun onMessage(webSocket: WebSocket, text: String) {
@@ -58,6 +56,11 @@ class WebSocket(
 
     fun closeSocket() {
         webSocket.close(WEB_SOCKET_CLOSE_CODE, null)
+    }
+
+    fun restart(scope: CoroutineScope) {
+        closeSocket()
+        start(scope)
     }
 
     companion object {

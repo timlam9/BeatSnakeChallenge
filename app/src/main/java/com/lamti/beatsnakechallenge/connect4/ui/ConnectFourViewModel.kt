@@ -11,13 +11,14 @@ import com.lamti.beatsnakechallenge.connect4.data.SocketMessage.Move
 import com.lamti.beatsnakechallenge.connect4.data.WebSocket
 import com.lamti.beatsnakechallenge.connect4.domain.Board
 import com.lamti.beatsnakechallenge.connect4.domain.ConnectFourState
-import com.lamti.beatsnakechallenge.connect4.domain.Error
 import com.lamti.beatsnakechallenge.connect4.domain.GameStatus
 import com.lamti.beatsnakechallenge.connect4.domain.GameStatus.Playing
+import com.lamti.beatsnakechallenge.connect4.domain.GameStatus.SearchingOpponent
 import com.lamti.beatsnakechallenge.connect4.domain.Turn
 import com.lamti.beatsnakechallenge.connect4.domain.Turn.Opponent
 import com.lamti.beatsnakechallenge.connect4.domain.Turn.Player
 import com.lamti.beatsnakechallenge.connect4.ui.Event.OnColumnClicked
+import com.lamti.beatsnakechallenge.connect4.ui.Event.OnRestartClicked
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -74,22 +75,17 @@ class ConnectFourViewModel : ViewModel() {
                 if (state.turn == Opponent) return
                 webSocket.sendMessage(Move(userID, event.index))
             }
-            Event.OnRestartClicked -> Unit
-        }
-    }
-
-    private fun handleMove(columnIndex: Int) {
-        val (board, error) = try {
-            Pair(state.board.update(columnIndex, state.turn), null)
-        } catch (exception: ColumnAlreadyFilledException) {
-            Pair(state.board, Error(ColumnAlreadyFilledException.message))
+            OnRestartClicked -> {
+                webSocket.restart(viewModelScope)
+                state = state.copy(gameStatus = SearchingOpponent)
+            }
         }
     }
 
 }
 
 private fun GameOverStatus.toGameStatus(turn: Turn): GameStatus = when (this) {
-    GameOverStatus.Won -> when(turn) {
+    GameOverStatus.Won -> when (turn) {
         Player -> GameStatus.OpponentWon
         Opponent -> GameStatus.PlayerWon
     }
