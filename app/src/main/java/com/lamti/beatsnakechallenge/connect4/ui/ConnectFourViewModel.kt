@@ -39,49 +39,52 @@ class ConnectFourViewModel : ViewModel() {
 
     init {
         webSocket.start(viewModelScope)
-        webSocket.messages.onEach {
-            when (val message = it) {
-                is SocketMessage.StartTurn -> {
-                    state = state.copy(
-                        board = message.board,
-                        turn = message.turn,
-                        gameStatus = Playing,
-                        error = null
-                    )
-                    userID = message.userID
-                }
-                is Move -> Unit
-                is SocketMessage.PlayerTurn -> {
-                    state = state.copy(
-                        board = message.board,
-                        turn = message.turn,
-                        error = null
-                    )
-                }
-                is SocketMessage.GameOver -> state = state.copy(
-                    board = message.board,
-                    gameStatus = message.winner.toGameStatus(message.turn),
-                    error = null
-                )
-                is SocketMessage.SocketError -> {
-                    val errorMessage = when(message.errorType) {
-                        "ColumnAlreadyFilled" -> "Cannot select an already filled board"
-                        "ConnectionLost" -> "Connection lost"
-                        else -> "Some error occurred"
-                    }
-                    state = state.copy(
-                        error = Error(errorMessage),
-                        gameStatus = if (message.errorType == "ConnectionLost") GameStatus.Disconnected else Playing
-                    )
-                }
-            }
-        }.launchIn(viewModelScope)
+        webSocket.messages.onEach(::handleSocketMessages).launchIn(viewModelScope)
     }
 
     override fun onCleared() {
         super.onCleared()
         webSocket.sendMessage(Disconnected(userID))
         webSocket.closeSocket()
+    }
+
+    private fun handleSocketMessages(message: SocketMessage) {
+        when (message) {
+            is SocketMessage.StartTurn -> {
+                state = state.copy(
+                    board = message.board,
+                    turn = message.turn,
+                    gameStatus = Playing,
+                    error = null
+                )
+                userID = message.userID
+            }
+            is SocketMessage.PlayerTurn -> state = state.copy(
+                board = message.board,
+                turn = message.turn,
+                error = null
+            )
+            is SocketMessage.GameOver -> state = state.copy(
+                board = message.board,
+                gameStatus = message.winner.toGameStatus(message.turn),
+                error = null
+            )
+            is SocketMessage.SocketError -> setErrorState(message)
+            is Move -> Unit
+            is Disconnected -> Unit
+        }
+    }
+
+    private fun setErrorState(message: SocketMessage.SocketError) {
+        val errorMessage = when (message.errorType) {
+            "ColumnAlreadyFilled" -> "Cannot select an already filled board"
+            "ConnectionLost" -> "Connection lost"
+            else -> "Some error occurred"
+        }
+        state = state.copy(
+            error = Error(errorMessage),
+            gameStatus = if (message.errorType == "ConnectionLost") GameStatus.Disconnected else Playing
+        )
     }
 
     fun onEvent(event: Event) {

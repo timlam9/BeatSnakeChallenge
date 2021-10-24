@@ -1,20 +1,15 @@
 package com.lamti.beatsnakechallenge.connect4.data
 
-import android.util.Log
-import com.lamti.beatsnakechallenge.connect4.domain.Board
-import com.lamti.beatsnakechallenge.connect4.domain.Turn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 
@@ -26,23 +21,15 @@ class WebSocket {
     val messages: SharedFlow<SocketMessage> = _messages
 
     fun start(coroutineScope: CoroutineScope) {
-        Log.d("TAGARA", "start")
         val request: Request = Request.Builder().url(WEB_SOCKET_URL).build()
         val client = OkHttpClient()
         webSocket = client.newWebSocket(request, object : WebSocketListener() {
 
             override fun onMessage(webSocket: WebSocket, text: String) {
                 coroutineScope.launch(Dispatchers.IO) {
-                    Log.d("TAGARA", text)
-                    val message = Json.decodeFromString(SocketMessage.serializer(), text)
-                    _messages.emit(message)
+                    _messages.emit(Json.decodeFromString(SocketMessage.serializer(), text))
                 }
                 super.onMessage(webSocket, text)
-            }
-
-            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                Log.d("TAGARA", "Error: " + t.message.toString())
-                super.onFailure(webSocket, t, response)
             }
 
         })
