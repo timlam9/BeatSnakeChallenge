@@ -24,6 +24,10 @@ sealed class SocketMessage {
     @SerialName("game_over")
     data class GameOver(val board: Board, val winner: GameOverStatus, val turn: Turn) : SocketMessage()
 
+    @Serializable
+    @SerialName("error")
+    data class SocketError(val message: String) : SocketMessage()
+
 }
 
 enum class GameOverStatus {

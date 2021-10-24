@@ -11,6 +11,7 @@ import com.lamti.beatsnakechallenge.connect4.data.SocketMessage.Move
 import com.lamti.beatsnakechallenge.connect4.data.WebSocket
 import com.lamti.beatsnakechallenge.connect4.domain.Board
 import com.lamti.beatsnakechallenge.connect4.domain.ConnectFourState
+import com.lamti.beatsnakechallenge.connect4.domain.Error
 import com.lamti.beatsnakechallenge.connect4.domain.GameStatus
 import com.lamti.beatsnakechallenge.connect4.domain.GameStatus.Playing
 import com.lamti.beatsnakechallenge.connect4.domain.GameStatus.SearchingOpponent
@@ -43,7 +44,8 @@ class ConnectFourViewModel : ViewModel() {
                     state = state.copy(
                         board = message.board,
                         turn = message.turn,
-                        gameStatus = Playing
+                        gameStatus = Playing,
+                        error = null
                     )
                     userID = message.userID
                 }
@@ -51,15 +53,16 @@ class ConnectFourViewModel : ViewModel() {
                 is SocketMessage.PlayerTurn -> {
                     state = state.copy(
                         board = message.board,
-                        turn = message.turn
+                        turn = message.turn,
+                        error = null
                     )
                 }
-                is SocketMessage.GameOver -> {
-                    state = state.copy(
-                        board = message.board,
-                        gameStatus = message.winner.toGameStatus(message.turn)
-                    )
-                }
+                is SocketMessage.GameOver -> state = state.copy(
+                    board = message.board,
+                    gameStatus = message.winner.toGameStatus(message.turn),
+                    error = null
+                )
+                is SocketMessage.SocketError -> state = state.copy(error = Error(message.message))
             }
         }.launchIn(viewModelScope)
     }

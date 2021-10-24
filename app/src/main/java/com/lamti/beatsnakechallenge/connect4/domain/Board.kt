@@ -1,6 +1,5 @@
 package com.lamti.beatsnakechallenge.connect4.domain
 
-import com.lamti.beatsnakechallenge.connect4.ui.ColumnAlreadyFilledException
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -21,19 +20,5 @@ data class Board(val columns: List<Column>) {
         }
 
     }
-
-    fun update(updatedSlot: Int, turn: Turn): Board = Board(
-        columns = columns.mapIndexed { index, column ->
-            if (index == updatedSlot) {
-                val emptySlot = column.slots.lastOrNull { it.availability == Availability.Available }
-                if (emptySlot == null) {
-                    throw ColumnAlreadyFilledException
-                } else {
-                    column.copy(slots = column.slots.map { if (it == emptySlot) it.claim(turn) else it })
-                }
-            } else
-                column
-        }
-    )
 
 }
