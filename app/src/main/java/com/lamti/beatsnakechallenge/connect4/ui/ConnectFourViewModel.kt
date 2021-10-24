@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lamti.beatsnakechallenge.connect4.data.GameOverStatus
 import com.lamti.beatsnakechallenge.connect4.data.SocketMessage
+import com.lamti.beatsnakechallenge.connect4.data.SocketMessage.Disconnected
 import com.lamti.beatsnakechallenge.connect4.data.SocketMessage.Move
 import com.lamti.beatsnakechallenge.connect4.data.WebSocket
 import com.lamti.beatsnakechallenge.connect4.domain.Board
@@ -62,13 +63,24 @@ class ConnectFourViewModel : ViewModel() {
                     gameStatus = message.winner.toGameStatus(message.turn),
                     error = null
                 )
-                is SocketMessage.SocketError -> state = state.copy(error = Error(message.message))
+                is SocketMessage.SocketError -> {
+                    val errorMessage = when(message.errorType) {
+                        "ColumnAlreadyFilled" -> "Cannot select an already filled board"
+                        "ConnectionLost" -> "Connection lost"
+                        else -> "Some error occurred"
+                    }
+                    state = state.copy(
+                        error = Error(errorMessage),
+                        gameStatus = if (message.errorType == "ConnectionLost") GameStatus.Disconnected else Playing
+                    )
+                }
             }
         }.launchIn(viewModelScope)
     }
 
     override fun onCleared() {
         super.onCleared()
+        webSocket.sendMessage(Disconnected(userID))
         webSocket.closeSocket()
     }
 

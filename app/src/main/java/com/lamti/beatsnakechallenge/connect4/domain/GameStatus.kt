@@ -6,14 +6,16 @@ enum class GameStatus {
     Playing,
     PlayerWon,
     OpponentWon,
-    Draw;
+    Draw,
+    Disconnected;
 
     fun getMessage(): String = when (this) {
         SearchingOpponent -> "Searching opponent"
         Playing -> "Playing..."
         PlayerWon -> "You won"
         OpponentWon -> "You lost"
-        Draw -> "Draw!"
+        Draw -> "Draw"
+        Disconnected -> "Game disconnected"
     }
 
 }
