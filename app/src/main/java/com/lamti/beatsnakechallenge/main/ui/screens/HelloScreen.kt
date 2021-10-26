@@ -1,4 +1,4 @@
-package com.lamti.beatsnakechallenge.main.screens
+package com.lamti.beatsnakechallenge.main.ui.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
@@ -35,13 +35,21 @@ import androidx.compose.ui.unit.dp
 import com.lamti.beatsnakechallenge.R
 import com.lamti.beatsnakechallenge.snake.ui.BUTTON_CORNER_SIZE
 import com.lamti.beatsnakechallenge.snake.ui.BUTTON_HEIGHT
-import com.lamti.beatsnakechallenge.main.theme.Navy50
-import com.lamti.beatsnakechallenge.main.theme.Orange75
+import com.lamti.beatsnakechallenge.main.ui.theme.Navy50
+import com.lamti.beatsnakechallenge.main.ui.theme.Orange75
 
 @Composable
-fun HelloScreen(onPlayClicked: (String) -> Unit = { }) {
+fun HelloScreen(
+    onPlayClicked: (
+        name: String,
+        email: String,
+        password: String
+    ) -> Unit
+) {
     val context = LocalContext.current
-    var text by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -65,24 +73,38 @@ fun HelloScreen(onPlayClicked: (String) -> Unit = { }) {
             text = stringResource(R.string.whats_your_name),
             style = MaterialTheme.typography.h5.copy(color = Navy50)
         )
-        NameTextField(text = text) {
-            text = it
+        InfoTextField(text = name) {
+            name = it
+        }
+        InfoTextField(text = email, label = stringResource(R.string.type_email)) {
+            email = it
+        }
+        InfoTextField(text = password, label = stringResource(R.string.type_password)) {
+            password = it
         }
         Spacer(modifier = Modifier.weight(4f))
         PlayButton {
             when {
-                text.isEmpty() -> Toast(context).apply {
+                name.isEmpty() -> Toast(context).apply {
                     setText("Please type your name first.")
                     show()
                 }
-                else -> onPlayClicked(text)
+                email.isEmpty() -> Toast(context).apply {
+                    setText("Please type your email first.")
+                    show()
+                }
+                password.isEmpty() -> Toast(context).apply {
+                    setText("Please type your password first.")
+                    show()
+                }
+                else -> onPlayClicked(name, email, password)
             }
         }
     }
 }
 
 @Composable
-fun NameTextField(
+fun InfoTextField(
     modifier: Modifier = Modifier,
     text: String,
     label: String = stringResource(R.string.type_your_name),
@@ -134,5 +156,5 @@ fun PlayButton(
 @Preview
 @Composable
 fun HelloScreenPreview() {
-    HelloScreen()
+    HelloScreen { _: String, _: String, _: String -> }
 }

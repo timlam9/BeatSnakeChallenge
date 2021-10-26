@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.lamti.beatsnakechallenge.main.theme.Orange100
+import com.lamti.beatsnakechallenge.main.ui.theme.Orange100
 
 @Composable
 fun Score(score: String, color: Color = MaterialTheme.colors.background, onSettingsClicked: () -> Unit) {

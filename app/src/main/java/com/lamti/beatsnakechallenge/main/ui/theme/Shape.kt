@@ -1,4 +1,4 @@
-package com.lamti.beatsnakechallenge.main.theme
+package com.lamti.beatsnakechallenge.main.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

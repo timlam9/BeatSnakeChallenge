@@ -1,12 +1,9 @@
 package com.lamti.beatsnakechallenge.snake.ui
 
 import androidx.compose.ui.unit.dp
-import com.lamti.beatsnakechallenge.main.theme.Mint100
-import com.lamti.beatsnakechallenge.main.theme.Navy80
-import com.lamti.beatsnakechallenge.main.theme.Orange100
-
-const val ANIMATION_OFFSET = 300
-const val ANIMATION_DURATION = 300
+import com.lamti.beatsnakechallenge.main.ui.theme.Mint100
+import com.lamti.beatsnakechallenge.main.ui.theme.Navy80
+import com.lamti.beatsnakechallenge.main.ui.theme.Orange100
 
 const val CRASH_ANIMATION_DURATION = 300
 

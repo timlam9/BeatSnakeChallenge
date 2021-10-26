@@ -8,4 +8,6 @@
     <string name="highscores">Highscores</string>
     <string name="beat_games">Beat Games</string>
     <string name="what_do_you_play">What do you want to play today?</string>
+    <string name="type_email">Type your email</string>
+    <string name="type_password">Type your password</string>
 </resources>

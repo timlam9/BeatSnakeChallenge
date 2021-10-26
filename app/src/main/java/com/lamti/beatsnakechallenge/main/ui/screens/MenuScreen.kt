@@ -1,4 +1,4 @@
-package com.lamti.beatsnakechallenge.main.screens
+package com.lamti.beatsnakechallenge.main.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,9 +21,9 @@ import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lamti.beatsnakechallenge.R
-import com.lamti.beatsnakechallenge.main.theme.Mint75
-import com.lamti.beatsnakechallenge.main.theme.Navy50
-import com.lamti.beatsnakechallenge.main.theme.Orange75
+import com.lamti.beatsnakechallenge.main.ui.theme.Mint75
+import com.lamti.beatsnakechallenge.main.ui.theme.Navy50
+import com.lamti.beatsnakechallenge.main.ui.theme.Orange75
 import com.lamti.beatsnakechallenge.snake.ui.BUTTON_CORNER_SIZE
 import com.lamti.beatsnakechallenge.snake.ui.BUTTON_HEIGHT
 

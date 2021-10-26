@@ -15,15 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.lamti.beatsnakechallenge.main.theme.Orange100
+import com.lamti.beatsnakechallenge.main.ui.theme.Orange100
 import com.lamti.beatsnakechallenge.snake.data.User
 
 @Composable
-fun HighscoreRow(position: Int, user: User, userID: String) {
+fun HighscoreRow(position: Int, user: User, userEmail: String) {
     val materialBackgroundColor = MaterialTheme.colors.background
     val materialOnBackgroundColor = MaterialTheme.colors.onBackground
-    val backgroundColor = remember { if (userID == user.id) Orange100 else materialBackgroundColor }
-    val textColor = remember { if (userID == user.id) Color.White else materialOnBackgroundColor }
+    val backgroundColor = remember { if (userEmail == user.email) Orange100 else materialBackgroundColor }
+    val textColor = remember { if (userEmail == user.email) Color.White else materialOnBackgroundColor }
 
     Card(
         shape = RoundedCornerShape(8.dp),

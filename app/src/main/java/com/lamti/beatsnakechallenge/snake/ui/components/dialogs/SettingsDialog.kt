@@ -34,7 +34,7 @@ import com.lamti.beatsnakechallenge.snake.domain.SnakeSpeed
 import com.lamti.beatsnakechallenge.snake.domain.SnakeSpeed.Fast
 import com.lamti.beatsnakechallenge.snake.domain.SnakeSpeed.Normal
 import com.lamti.beatsnakechallenge.snake.domain.SnakeSpeed.Slow
-import com.lamti.beatsnakechallenge.main.theme.Orange100
+import com.lamti.beatsnakechallenge.main.ui.theme.Orange100
 
 @Composable
 fun SettingsDialog(

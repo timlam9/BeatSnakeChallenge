@@ -5,7 +5,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -14,9 +13,9 @@ import androidx.compose.ui.res.painterResource
 import com.lamti.beatsnakechallenge.R
 import com.lamti.beatsnakechallenge.connect4.domain.Availability
 import com.lamti.beatsnakechallenge.connect4.domain.Slot
-import com.lamti.beatsnakechallenge.main.theme.Mint100
-import com.lamti.beatsnakechallenge.main.theme.Navy10
-import com.lamti.beatsnakechallenge.main.theme.Navy100
+import com.lamti.beatsnakechallenge.main.ui.theme.Mint100
+import com.lamti.beatsnakechallenge.main.ui.theme.Navy10
+import com.lamti.beatsnakechallenge.main.ui.theme.Navy100
 
 @Composable
 fun Slot(modifier: Modifier, slot: Slot) {

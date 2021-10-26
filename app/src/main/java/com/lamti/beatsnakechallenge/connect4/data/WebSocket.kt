@@ -1,5 +1,6 @@
 package com.lamti.beatsnakechallenge.connect4.data
 
+import com.lamti.beatsnakechallenge.snake.ui.SnakePreferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -13,7 +14,7 @@ import okhttp3.Request
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 
-class WebSocket {
+class WebSocket(private val preferences: SnakePreferences) {
 
     private lateinit var webSocket: WebSocket
 
@@ -22,7 +23,14 @@ class WebSocket {
 
     fun start(coroutineScope: CoroutineScope) {
         val request: Request = Request.Builder().url(WEB_SOCKET_URL).build()
-        val client = OkHttpClient()
+        val client = OkHttpClient().newBuilder()
+            .addInterceptor { chain ->
+                val newRequest = chain.request().newBuilder()
+                    .addHeader("Authorization", "Bearer ${preferences.getAuthToken()}")
+                    .build()
+                chain.proceed(newRequest)
+            }.build()
+
         webSocket = client.newWebSocket(request, object : WebSocketListener() {
 
             override fun onMessage(webSocket: WebSocket, text: String) {

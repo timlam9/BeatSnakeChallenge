@@ -7,7 +7,10 @@ import com.lamti.beatsnakechallenge.snake.domain.Board.Direction.Up
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class Game(private val height: Int, private val width: Int) {
+class Game(
+    private val height: Int,
+    private val width: Int
+) {
 
     companion object {
 

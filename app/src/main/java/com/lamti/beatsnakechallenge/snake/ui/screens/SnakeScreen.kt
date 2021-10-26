@@ -13,7 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.lamti.beatsnakechallenge.main.theme.Navy100
+import com.lamti.beatsnakechallenge.main.ui.theme.Navy100
 import com.lamti.beatsnakechallenge.snake.domain.Board
 import com.lamti.beatsnakechallenge.snake.domain.Point
 import com.lamti.beatsnakechallenge.snake.domain.SnakeControllers

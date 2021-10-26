@@ -1,57 +1,34 @@
-package com.lamti.beatsnakechallenge.main.activity
+package com.lamti.beatsnakechallenge.main.ui.activity
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.activity.viewModels
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.lamti.beatsnakechallenge.snake.data.SnakeRepository
+import com.lamti.beatsnakechallenge.main.ui.navigation.BeatGamesNavigation
+import com.lamti.beatsnakechallenge.main.ui.theme.BeatGamesTheme
 import com.lamti.beatsnakechallenge.snake.domain.Board
-import com.lamti.beatsnakechallenge.snake.domain.Game
 import com.lamti.beatsnakechallenge.snake.ui.MediaPlayerManager
-import com.lamti.beatsnakechallenge.snake.ui.SnakePreferences
-import com.lamti.beatsnakechallenge.main.activity.MainViewModel.Companion.HEIGHT
-import com.lamti.beatsnakechallenge.main.activity.MainViewModel.Companion.WIDTH
-import com.lamti.beatsnakechallenge.main.navigation.BeatGamesNavigation
-import com.lamti.beatsnakechallenge.main.theme.BeatGamesTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val mediaPlayerManager = MediaPlayerManager(this@MainActivity)
-
-    private val repository by lazy {
-        SnakeRepository(
-            SnakePreferences(
-                applicationContext.getSharedPreferences(
-                    SnakePreferences.SNAKE_PREFERENCES,
-                    Context.MODE_PRIVATE
-                )
-            )
-        )
-    }
-
-    private val viewModelFactory by lazy {
-        MainViewModelFactory(
-            repository = repository,
-            game = Game(HEIGHT, WIDTH)
-        )
-    }
-    private val viewModel: MainViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
-    }
+    @Inject
+    lateinit var mediaPlayerManager: MediaPlayerManager
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

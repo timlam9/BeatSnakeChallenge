@@ -1,13 +1,13 @@
-package com.lamti.beatsnakechallenge.main.navigation
+package com.lamti.beatsnakechallenge.main.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.lamti.beatsnakechallenge.connect4.ui.ConnectFourScreen
-import com.lamti.beatsnakechallenge.main.activity.MainViewModel
-import com.lamti.beatsnakechallenge.main.screens.HelloScreen
-import com.lamti.beatsnakechallenge.main.screens.MenuScreen
+import com.lamti.beatsnakechallenge.main.ui.activity.MainViewModel
+import com.lamti.beatsnakechallenge.main.ui.screens.HelloScreen
+import com.lamti.beatsnakechallenge.main.ui.screens.MenuScreen
 import com.lamti.beatsnakechallenge.snake.data.User
 import com.lamti.beatsnakechallenge.snake.domain.Board
 import com.lamti.beatsnakechallenge.snake.ui.SnakeState
@@ -22,7 +22,7 @@ fun BeatGamesNavigation(
     score: Int
 ) {
     val navController = rememberNavController()
-    val initialRoute = if (user.name.isEmpty()) Screen.Hello.route else Screen.Menu.route
+    val initialRoute = if (user.email.isEmpty()) Screen.Hello.route else Screen.Menu.route
 
     NavHost(
         navController = navController,
@@ -31,8 +31,8 @@ fun BeatGamesNavigation(
         composable(
             route = Screen.Hello.route
         ) {
-            HelloScreen { name ->
-                viewModel.uploadUser(User(name = name))
+            HelloScreen { name, email, password ->
+                viewModel.register(name, email, password)
                 navController.navigate(Screen.Menu.route) {
                     popUpTo(Screen.Hello.route) {
                         inclusive = true
@@ -76,7 +76,7 @@ fun BeatGamesNavigation(
         composable(
             route = Screen.Highscores.route
         ) {
-            HighscoresScreen(viewModel = viewModel, id = user.id ?: "")
+            HighscoresScreen(viewModel = viewModel, email = user.email)
         }
         composable(
             route = Screen.Connect4.route

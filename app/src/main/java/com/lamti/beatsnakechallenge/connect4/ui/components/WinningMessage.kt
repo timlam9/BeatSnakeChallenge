@@ -4,7 +4,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.lamti.beatsnakechallenge.connect4.domain.GameStatus
-import com.lamti.beatsnakechallenge.main.theme.Mint100
+import com.lamti.beatsnakechallenge.main.ui.theme.Mint100
 
 @Composable
 fun WinningMessage(

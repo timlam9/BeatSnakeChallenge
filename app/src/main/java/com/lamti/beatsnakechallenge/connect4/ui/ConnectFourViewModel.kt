@@ -21,12 +21,14 @@ import com.lamti.beatsnakechallenge.connect4.domain.Turn.Opponent
 import com.lamti.beatsnakechallenge.connect4.domain.Turn.Player
 import com.lamti.beatsnakechallenge.connect4.ui.Event.OnColumnClicked
 import com.lamti.beatsnakechallenge.connect4.ui.Event.OnRestartClicked
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
-class ConnectFourViewModel : ViewModel() {
+@HiltViewModel
+class ConnectFourViewModel @Inject constructor(private val webSocket: WebSocket) : ViewModel() {
 
-    private val webSocket = WebSocket()
     private var userID = ""
 
     var state: ConnectFourState by mutableStateOf(
@@ -109,4 +111,3 @@ private fun GameOverStatus.toGameStatus(turn: Turn): GameStatus = when (this) {
     }
     GameOverStatus.Draw -> GameStatus.Draw
 }
-

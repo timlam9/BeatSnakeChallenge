@@ -19,7 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.lamti.beatsnakechallenge.main.theme.Orange100
+import com.lamti.beatsnakechallenge.main.ui.theme.Orange100
 
 val joystickColor = Orange100
 

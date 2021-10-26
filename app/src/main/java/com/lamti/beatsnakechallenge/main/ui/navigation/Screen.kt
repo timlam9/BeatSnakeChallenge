@@ -1,4 +1,4 @@
-package com.lamti.beatsnakechallenge.main.navigation
+package com.lamti.beatsnakechallenge.main.ui.navigation
 
 sealed class Screen(open val route: String = "") {
 
