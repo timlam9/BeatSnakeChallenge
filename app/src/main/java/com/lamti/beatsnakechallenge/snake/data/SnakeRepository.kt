@@ -1,58 +1,18 @@
 package com.lamti.beatsnakechallenge.snake.data
 
-import android.util.Log
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import com.google.gson.GsonBuilder
-import com.google.gson.Gson
 import com.lamti.beatsnakechallenge.main.domain.RegisteredUser
 import com.lamti.beatsnakechallenge.main.domain.RegistrationCredentials
-import com.lamti.beatsnakechallenge.snake.ui.UsersViewState
 import com.lamti.beatsnakechallenge.snake.ui.SnakePreferences
-import okhttp3.OkHttpClient
-import java.util.concurrent.TimeUnit
+import com.lamti.beatsnakechallenge.snake.ui.UsersViewState
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class SnakeRepository constructor(
-    private val preferences: SnakePreferences
+@Singleton
+class SnakeRepository @Inject constructor(
+    private val preferences: SnakePreferences,
+    private val registerApi: RegisterApi,
+    private val api: SnakeApi
 ) {
-
-    companion object {
-
-        //        private const val BASE_URL = "https://beatsnake.herokuapp.com/"
-        private const val BASE_URL = "http://192.168.1.101:8080/"
-
-    }
-
-    private val gson: Gson = GsonBuilder()
-        .setLenient()
-        .create()
-
-    private val client: OkHttpClient.Builder = OkHttpClient()
-        .newBuilder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
-
-    private val registerApi = Retrofit.Builder()
-        .client(client.build())
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create(gson))
-        .build()
-        .create(SnakeApi::class.java)
-
-    private val api = Retrofit.Builder()
-        .client(
-            client.addInterceptor { chain ->
-                val newRequest = chain.request().newBuilder()
-                    .addHeader("Authorization", "Bearer ${preferences.getAuthToken()}")
-                    .build()
-                chain.proceed(newRequest)
-            }.build()
-        )
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create(gson))
-        .build()
-        .create(SnakeApi::class.java)
 
     suspend fun register(credentials: RegistrationCredentials): RegisteredUser = registerApi.register(credentials).apply {
         preferences.saveToken(token)
@@ -62,11 +22,7 @@ class SnakeRepository constructor(
 
     suspend fun updateUser(): User {
         val updatedUser = getUser()
-        try {
-            api.updateUser(updatedUser)
-        } catch (e: Exception) {
-            Log.d("TAGARA", e.message.toString())
-        }
+        api.updateUser(updatedUser)
 
         return updatedUser
     }
@@ -76,7 +32,6 @@ class SnakeRepository constructor(
     } catch (e: Exception) {
         UsersViewState.Error(e.message ?: "error")
     }
-
 
     fun saveHighscore(score: Int) {
         preferences.saveHighscore(score)
