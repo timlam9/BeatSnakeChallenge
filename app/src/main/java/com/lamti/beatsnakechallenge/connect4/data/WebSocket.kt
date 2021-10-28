@@ -13,9 +13,7 @@ import okhttp3.Request
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class WebSocket @Inject constructor(private val client: OkHttpClient) {
 
     private lateinit var webSocket: WebSocket
@@ -46,11 +44,6 @@ class WebSocket @Inject constructor(private val client: OkHttpClient) {
 
     fun closeSocket() {
         webSocket.close(WEB_SOCKET_CLOSE_CODE, null)
-    }
-
-    fun restart(scope: CoroutineScope) {
-        closeSocket()
-        start(scope)
     }
 
     companion object {

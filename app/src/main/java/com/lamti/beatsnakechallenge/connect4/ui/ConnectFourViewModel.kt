@@ -7,7 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lamti.beatsnakechallenge.connect4.data.GameOverStatus
 import com.lamti.beatsnakechallenge.connect4.data.SocketMessage
-import com.lamti.beatsnakechallenge.connect4.data.SocketMessage.Disconnected
+import com.lamti.beatsnakechallenge.connect4.data.SocketMessage.Connect
+import com.lamti.beatsnakechallenge.connect4.data.SocketMessage.Disconnect
 import com.lamti.beatsnakechallenge.connect4.data.SocketMessage.Move
 import com.lamti.beatsnakechallenge.connect4.data.WebSocket
 import com.lamti.beatsnakechallenge.connect4.domain.Board
@@ -21,15 +22,17 @@ import com.lamti.beatsnakechallenge.connect4.domain.Turn.Opponent
 import com.lamti.beatsnakechallenge.connect4.domain.Turn.Player
 import com.lamti.beatsnakechallenge.connect4.ui.Event.OnColumnClicked
 import com.lamti.beatsnakechallenge.connect4.ui.Event.OnRestartClicked
+import com.lamti.beatsnakechallenge.snake.ui.SnakePreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
-class ConnectFourViewModel @Inject constructor(private val webSocket: WebSocket) : ViewModel() {
-
-    private var userID = ""
+class ConnectFourViewModel @Inject constructor(
+    private val webSocket: WebSocket,
+    private val preferences: SnakePreferences
+) : ViewModel() {
 
     var state: ConnectFourState by mutableStateOf(
         ConnectFourState(
@@ -41,26 +44,24 @@ class ConnectFourViewModel @Inject constructor(private val webSocket: WebSocket)
 
     init {
         webSocket.start(viewModelScope)
+        webSocket.sendMessage(Connect(preferences.getEmail()))
         webSocket.messages.onEach(::handleSocketMessages).launchIn(viewModelScope)
     }
 
     override fun onCleared() {
         super.onCleared()
-        webSocket.sendMessage(Disconnected(userID))
+        webSocket.sendMessage(Disconnect(preferences.getEmail()))
         webSocket.closeSocket()
     }
 
     private fun handleSocketMessages(message: SocketMessage) {
         when (message) {
-            is SocketMessage.StartTurn -> {
-                state = state.copy(
-                    board = message.board,
-                    turn = message.turn,
-                    gameStatus = Playing,
-                    error = null
-                )
-                userID = message.userID
-            }
+            is SocketMessage.StartTurn -> state = state.copy(
+                board = message.board,
+                turn = message.turn,
+                gameStatus = Playing,
+                error = null
+            )
             is SocketMessage.PlayerTurn -> state = state.copy(
                 board = message.board,
                 turn = message.turn,
@@ -73,7 +74,8 @@ class ConnectFourViewModel @Inject constructor(private val webSocket: WebSocket)
             )
             is SocketMessage.SocketError -> setErrorState(message)
             is Move -> Unit
-            is Disconnected -> Unit
+            is Disconnect -> Unit
+            is Connect -> Unit
         }
     }
 
@@ -93,11 +95,11 @@ class ConnectFourViewModel @Inject constructor(private val webSocket: WebSocket)
         when (event) {
             is OnColumnClicked -> {
                 if (state.turn == Opponent) return
-                webSocket.sendMessage(Move(userID, event.index))
+                webSocket.sendMessage(Move(preferences.getEmail(), event.index))
             }
             OnRestartClicked -> {
-                webSocket.restart(viewModelScope)
                 state = state.copy(gameStatus = SearchingOpponent)
+                webSocket.sendMessage(Connect(preferences.getEmail()))
             }
         }
     }

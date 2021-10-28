@@ -97,7 +97,6 @@ object SingletonModule {
         .build()
         .create(SnakeApi::class.java)
 
-    @Singleton
     @Provides
     fun provideHttpClient(
         @ApplicationContext context: Context,
