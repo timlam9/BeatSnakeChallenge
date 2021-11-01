@@ -1,5 +1,6 @@
 package com.lamti.beatsnakechallenge.connect4.data
 
+import com.lamti.beatsnakechallenge.connect4.data.SocketMessage.InBound
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,8 +19,8 @@ class WebSocket @Inject constructor(private val client: OkHttpClient) {
 
     private lateinit var webSocket: WebSocket
 
-    private val _messages = MutableSharedFlow<SocketMessage>()
-    val messages: SharedFlow<SocketMessage> = _messages
+    private val _messages = MutableSharedFlow<InBound>()
+    val messages: SharedFlow<InBound> = _messages
 
     fun start(coroutineScope: CoroutineScope) {
         val request: Request = Request.Builder().url(WEB_SOCKET_URL).build()
@@ -28,7 +29,7 @@ class WebSocket @Inject constructor(private val client: OkHttpClient) {
 
             override fun onMessage(webSocket: WebSocket, text: String) {
                 coroutineScope.launch(Dispatchers.IO) {
-                    _messages.emit(Json.decodeFromString(SocketMessage.serializer(), text))
+                    _messages.emit(Json.decodeFromString(InBound.serializer(), text))
                 }
                 super.onMessage(webSocket, text)
             }

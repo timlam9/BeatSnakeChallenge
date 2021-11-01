@@ -7,9 +7,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lamti.beatsnakechallenge.connect4.data.GameOverStatus
 import com.lamti.beatsnakechallenge.connect4.data.SocketMessage
-import com.lamti.beatsnakechallenge.connect4.data.SocketMessage.Connect
-import com.lamti.beatsnakechallenge.connect4.data.SocketMessage.Disconnect
-import com.lamti.beatsnakechallenge.connect4.data.SocketMessage.Move
+import com.lamti.beatsnakechallenge.connect4.data.SocketMessage.InBound
+import com.lamti.beatsnakechallenge.connect4.data.SocketMessage.InBound.GameOver
+import com.lamti.beatsnakechallenge.connect4.data.SocketMessage.InBound.PlayerTurn
+import com.lamti.beatsnakechallenge.connect4.data.SocketMessage.InBound.SocketError
+import com.lamti.beatsnakechallenge.connect4.data.SocketMessage.InBound.StartTurn
+import com.lamti.beatsnakechallenge.connect4.data.SocketMessage.OutBound.Connect
+import com.lamti.beatsnakechallenge.connect4.data.SocketMessage.OutBound.Move
 import com.lamti.beatsnakechallenge.connect4.data.WebSocket
 import com.lamti.beatsnakechallenge.connect4.domain.Board
 import com.lamti.beatsnakechallenge.connect4.domain.ConnectFourState
@@ -50,36 +54,33 @@ class ConnectFourViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        webSocket.sendMessage(Disconnect(preferences.getEmail()))
+        webSocket.sendMessage(SocketMessage.OutBound.Disconnect(preferences.getEmail()))
         webSocket.closeSocket()
     }
 
-    private fun handleSocketMessages(message: SocketMessage) {
+    private fun handleSocketMessages(message: InBound) {
         when (message) {
-            is SocketMessage.StartTurn -> state = state.copy(
+            is StartTurn -> state = state.copy(
                 board = message.board,
                 turn = message.turn,
                 gameStatus = Playing,
                 error = null
             )
-            is SocketMessage.PlayerTurn -> state = state.copy(
+            is PlayerTurn -> state = state.copy(
                 board = message.board,
                 turn = message.turn,
                 error = null
             )
-            is SocketMessage.GameOver -> state = state.copy(
+            is GameOver -> state = state.copy(
                 board = message.board,
                 gameStatus = message.winner.toGameStatus(message.turn),
                 error = null
             )
-            is SocketMessage.SocketError -> setErrorState(message)
-            is Move -> Unit
-            is Disconnect -> Unit
-            is Connect -> Unit
+            is SocketError -> setErrorState(message)
         }
     }
 
-    private fun setErrorState(message: SocketMessage.SocketError) {
+    private fun setErrorState(message: SocketError) {
         val errorMessage = when (message.errorType) {
             "ColumnAlreadyFilled" -> "Cannot select an already filled board"
             "ConnectionLost" -> "Connection lost"
