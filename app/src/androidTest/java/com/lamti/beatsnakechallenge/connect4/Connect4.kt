@@ -10,6 +10,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import androidx.test.platform.app.InstrumentationRegistry
 import com.lamti.beatsnakechallenge.connect4.data.WebSocket
 import com.lamti.beatsnakechallenge.connect4.domain.GameStatus.Draw
 import com.lamti.beatsnakechallenge.connect4.domain.GameStatus.OpponentWon
@@ -21,6 +22,8 @@ import com.lamti.beatsnakechallenge.connect4.ui.ConnectFourScreen
 import com.lamti.beatsnakechallenge.connect4.ui.ConnectFourViewModel
 import com.lamti.beatsnakechallenge.main.ui.theme.BeatGamesTheme
 import com.lamti.beatsnakechallenge.snake.ui.SnakePreferences
+import okhttp3.OkHttp
+import okhttp3.OkHttpClient
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -269,15 +272,16 @@ class Connect4 {
     }
 
     private val snakePreferences = SnakePreferences(
-        context.getSharedPreferences(
+        InstrumentationRegistry.getInstrumentation().context.getSharedPreferences(
             SnakePreferences.SNAKE_PREFERENCES,
             Context.MODE_PRIVATE
         )
     )
-    private val webSocket = WebSocket(snakePreferences)
+    private val okHttpClient = OkHttpClient()
+    private val webSocket = WebSocket(okHttpClient)
 
     private fun newGame(function: ConnectFourRobot.() -> Unit) =
-        ConnectFourRobot(composeTestRule, ConnectFourViewModel(webSocket)).apply { function() }
+        ConnectFourRobot(composeTestRule, ConnectFourViewModel(webSocket, snakePreferences)).apply { function() }
 
 }
 

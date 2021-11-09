@@ -54,7 +54,7 @@ object SingletonModule {
 
 
     //        private const val BASE_URL = "https://beatsnake.herokuapp.com/"
-    private const val BASE_URL = "http://192.168.1.101:8080/"
+    private const val BASE_URL = "http://192.168.1.101:8092/"
 
     @Singleton
     @Provides

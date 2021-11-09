@@ -12,6 +12,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
@@ -20,16 +22,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lamti.beatsnakechallenge.R
@@ -47,9 +54,9 @@ fun HelloScreen(
     ) -> Unit
 ) {
     val context = LocalContext.current
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var name by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -76,10 +83,17 @@ fun HelloScreen(
         InfoTextField(text = name) {
             name = it
         }
-        InfoTextField(text = email, label = stringResource(R.string.type_email)) {
+        InfoTextField(
+            text = email,
+            label = stringResource(R.string.type_email),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Email
+            )
+        ) {
             email = it
         }
-        InfoTextField(text = password, label = stringResource(R.string.type_password)) {
+        PasswordTextField(text = password) {
             password = it
         }
         Spacer(modifier = Modifier.weight(4f))
@@ -108,6 +122,11 @@ fun InfoTextField(
     modifier: Modifier = Modifier,
     text: String,
     label: String = stringResource(R.string.type_your_name),
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(
+        imeAction = ImeAction.Next,
+        keyboardType = KeyboardType.Text,
+        capitalization = KeyboardCapitalization.Words
+    ),
     onValueChange: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
@@ -120,12 +139,8 @@ fun InfoTextField(
         colors = TextFieldDefaults.outlinedTextFieldColors(),
         maxLines = 1,
         singleLine = true,
-        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-        keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Done,
-            keyboardType = KeyboardType.Text,
-            capitalization = KeyboardCapitalization.Words
-        )
+        keyboardOptions = keyboardOptions,
+        keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) })
     )
 }
 
@@ -151,6 +166,43 @@ fun PlayButton(
             )
         )
     }
+}
+
+@Composable
+fun PasswordTextField(
+    modifier: Modifier = Modifier,
+    text: String,
+    label: String = stringResource(R.string.type_password),
+    placeholder: String = stringResource(R.string.password),
+    onValueChange: (String) -> Unit
+) {
+    val focusManager = LocalFocusManager.current
+    var passwordVisibility by remember { mutableStateOf(false) }
+
+    OutlinedTextField(
+        value = text,
+        onValueChange = { onValueChange(it) },
+        modifier = modifier
+            .padding(top = 16.dp)
+            .fillMaxWidth(),
+        label = { Text(label) },
+        placeholder = { Text(placeholder) },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Done,
+        ),
+        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+        singleLine = true,
+        visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+        trailingIcon = {
+            val iconId = if (passwordVisibility) R.drawable.ic_visibility else R.drawable.ic_visibility_off
+            IconButton(
+                onClick = { passwordVisibility = !passwordVisibility }
+            ) {
+                Icon(painter = painterResource(iconId), "")
+            }
+        }
+    )
 }
 
 @Preview

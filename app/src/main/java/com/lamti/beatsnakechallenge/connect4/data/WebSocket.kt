@@ -49,7 +49,7 @@ class WebSocket @Inject constructor(private val client: OkHttpClient) {
 
     companion object {
 
-        private const val WEB_SOCKET_URL = "ws://192.168.1.101:8080/scoreFour"
+        private const val WEB_SOCKET_URL = "ws://192.168.1.101:8092/scoreFour"
         private const val WEB_SOCKET_CLOSE_CODE = 1000
 
     }

@@ -16,13 +16,22 @@
         <entry key="../../../../layout/compose-model-1632058158848.xml" value="0.30925925925925923" />
         <entry key="../../../../layout/compose-model-1632058200741.xml" value="0.30925925925925923" />
         <entry key="../../../../layout/compose-model-1635166030359.xml" value="0.25555555555555554" />
+        <entry key="../../../../layout/compose-model-1636284242128.xml" value="0.5122466216216216" />
+        <entry key="../../../../layout/compose-model-1636284251977.xml" value="0.5122466216216216" />
+        <entry key="../../../../layout/compose-model-1636358972399.xml" value="0.5122466216216216" />
+        <entry key="../../../../layout/compose-model-1636452630349.xml" value="0.5211148648648649" />
+        <entry key="../../../../layout/compose-model-1636452694190.xml" value="0.5" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_background.xml" value="0.237" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.237" />
         <entry key="app/src/main/res/drawable/ic_beat.xml" value="0.189" />
+        <entry key="app/src/main/res/drawable/ic_beat_icon.xml" value="0.6052083333333333" />
         <entry key="app/src/main/res/drawable/ic_beat_launcher.xml" value="0.237" />
+        <entry key="app/src/main/res/drawable/ic_doggy.xml" value="0.6052083333333333" />
+        <entry key="app/src/main/res/drawable/ic_doggy_no_eyes.xml" value="0.6052083333333333" />
         <entry key="app/src/main/res/drawable/ic_launcher.xml" value="0.237" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.237" />
         <entry key="app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.237" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.6052083333333333" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.237" />
       </map>
     </option>
