@@ -1,6 +1,7 @@
 package com.lamti.beatsnakechallenge.connect4.data
 
 import com.lamti.beatsnakechallenge.connect4.data.SocketMessage.InBound
+import com.lamti.beatsnakechallenge.di.SingletonModule.HEROKU_URL
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -49,7 +50,7 @@ class WebSocket @Inject constructor(private val client: OkHttpClient) {
 
     companion object {
 
-        private const val WEB_SOCKET_URL = "ws://192.168.1.101:8092/scoreFour"
+        private const val WEB_SOCKET_URL = "ws://$HEROKU_URL/scoreFour"
         private const val WEB_SOCKET_CLOSE_CODE = 1000
 
     }
