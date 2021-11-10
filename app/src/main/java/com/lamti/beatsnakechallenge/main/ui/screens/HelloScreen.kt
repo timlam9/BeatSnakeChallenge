@@ -72,7 +72,7 @@ fun HelloScreen(
             )
         )
         Text(
-            text = stringResource(R.string.welcome_to_beat_games),
+            text = stringResource(R.string.welcome_to_go_games),
             style = MaterialTheme.typography.h5.copy(color = Navy50)
         )
         Spacer(modifier = Modifier.weight(1f))

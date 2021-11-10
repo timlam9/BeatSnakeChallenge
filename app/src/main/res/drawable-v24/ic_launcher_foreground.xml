@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/ic_beat_icon"/>
-    <item android:drawable="@drawable/ic_snake_orange"
-        android:width="20dp"
-        android:height="20dp"
-        android:gravity="center"
-        android:top="20dp"
-        android:start="20dp"/>
+    <item
+        android:width="34dp"
+        android:height="44dp"
+        android:bottom="12dp"
+        android:drawable="@drawable/ic_joystick"
+        android:gravity="center|bottom" />
 </layer-list>

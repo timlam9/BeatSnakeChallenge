@@ -1,12 +1,12 @@
 <resources>
-    <string name="app_name">Beat Games</string>
+    <string name="app_name">Go Games</string>
     <string name="hello_there">Hello there!</string>
-    <string name="welcome_to_beat_games">Welcome to Beat Games!</string>
+    <string name="welcome_to_go_games">Welcome to Go Games!</string>
     <string name="whats_your_name">What\'s your name?</string>
     <string name="type_your_name">Type your name</string>
     <string name="play">Play</string>
     <string name="highscores">Highscores</string>
-    <string name="beat_games">Beat Games</string>
+    <string name="go_games">Go Games</string>
     <string name="what_do_you_play">What do you want to play today?</string>
     <string name="type_email">Type your email</string>
     <string name="type_password">Type your password</string>
