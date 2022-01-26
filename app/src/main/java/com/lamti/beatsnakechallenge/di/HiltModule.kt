@@ -1,8 +1,6 @@
 package com.lamti.beatsnakechallenge.di
 
 import android.content.Context
-import com.chuckerteam.chucker.api.ChuckerCollector
-import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.lamti.beatsnakechallenge.main.domain.RefreshTokenCredentials
@@ -64,19 +62,11 @@ object SingletonModule {
 
     @Singleton
     @Provides
-    fun provideClientBuilder(@ApplicationContext context: Context): OkHttpClient.Builder = OkHttpClient()
+    fun provideClientBuilder(): OkHttpClient.Builder = OkHttpClient()
         .newBuilder()
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
-        .addInterceptor(
-            ChuckerInterceptor.Builder(context)
-                .collector(ChuckerCollector(context))
-                .maxContentLength(250000L)
-                .redactHeaders(emptySet())
-                .alwaysReadResponseBody(false)
-                .build()
-        )
 
     @Singleton
     @Provides
@@ -99,7 +89,6 @@ object SingletonModule {
 
     @Provides
     fun provideHttpClient(
-        @ApplicationContext context: Context,
         api: RegisterApi,
         preferences: SnakePreferences
     ): OkHttpClient = OkHttpClient().newBuilder()
@@ -125,14 +114,8 @@ object SingletonModule {
                 .addHeader("Authorization", "Bearer ${preferences.getAuthToken()}")
                 .build()
             chain.proceed(newRequest)
-        }.addInterceptor(
-            ChuckerInterceptor.Builder(context)
-                .collector(ChuckerCollector(context))
-                .maxContentLength(250000L)
-                .redactHeaders(emptySet())
-                .alwaysReadResponseBody(false)
-                .build()
-        ).build()
+        }
+        .build()
 
 }
 
