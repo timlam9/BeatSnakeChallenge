@@ -25,7 +25,7 @@ fun Score(score: String, color: Color = MaterialTheme.colors.background, onSetti
         horizontalArrangement = Arrangement.Start
     ) {
         Text(
-            text = "Beat Snake",
+            text = "Go Snake",
             style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.ExtraBold),
             color = Orange100
         )
